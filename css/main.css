@@ -1,0 +1,13 @@
+/* Reset */
+header nav {
+  height: 66px;
+  background-color: #CE2021;
+}
+
+main {
+  margin-top: 20px;
+}
+
+p {
+  text-align: justify;
+}

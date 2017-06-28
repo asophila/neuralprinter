@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Practia | </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <!-- inject:css -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
+    <link href="css/less-space.css" rel="stylesheet" type="text/css">
+    <link type="text/css" rel="stylesheet" href="css/main.css" media="screen,projection" />
+    <!-- endinject -->
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="nav-wrapper z-depth-1"> <a href="/" class="brand-logo"><img src="images/logo.png" alt="Practia" class="responsive-img" ></a> </div>
+        </nav>
+    </header>
+    <main>
+        <div class="row xs-pl-20 xs-pr-20">
+            <div class="col s12">
+                <h5>Título</h5>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                    magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                    commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                    nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+                    anim id est laborum.</p>
+            </div>
+        </div>
+        <div class="row">
+            <form class="col s12" ENCTYPE="multipart/form-data" method="post">
+                <div class="row">
+                    <div class="input-field col s12 m6"> <input id="first_name" type="text" required> <label for="first_name">* Nombre</label> </div>
+                    <div class="input-field col s12 m6">
+                    <input id="last_name" type="text"> <label for="last_name">Apellido</label> </div>
+                </div>
+                <div class="row">
+                    <div class="file-field input-field col s12 m8">
+                        <div class="btn"> <span>Imagen</span> <input name="file" type="file" required> </div>
+                        <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text"> </div>
+                    </div>
+                    <div class="input-field col s12 m4"> <select class="icons" required>
+                            <option value="" disabled selected>Selecciona un estilo</option>
+                            <option value="1" data-icon="images/styles/practia.jpg" class="left circle">Mosaico</option>
+                            <option value="2" data-icon="images/styles/practia.jpg" class="left circle">Option 2</option>
+                            <option value="3" data-icon="images/styles/QR.png" class="left circle">Option 3</option>
+                        </select> <label>* Estilo</label> </div>
+                </div>
+                <div class="row center-align"> <button class="btn waves-effect waves-light btn-large" type="submit" name="action">Enviar<i class="material-icons right">send</i></button>                    </div>
+            </form>
+        </div>
+    </main>
+    <footer> </footer>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/practia.js"></script>
+</body>
+
+</html>
