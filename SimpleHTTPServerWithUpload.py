@@ -60,20 +60,28 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         r, info = self.deal_post_data()
         print((r, info, "by: ", self.client_address))
         f = BytesIO()
-        f.write(b'<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">')
-        f.write(b"<html>\n<title>Upload Result Page</title>\n")
-        f.write(b"<body>\n<h2>Upload Result Page</h2>\n")
-        f.write(b"<hr>\n")
-        if r:
-            f.write(b"<strong>Success:</strong>")
+
+        if not r:
+            f.write(b'<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">')
+            f.write(b"<html>\n<title>Upload Result Page</title>\n")
+            f.write(b"<body>\n<h2>Upload Result Page</h2>\n")
+            f.write(b"<hr>\n")
+            if r:
+                f.write(b"<strong>Success:</strong>")
+            else:
+                f.write(b"<strong>Failed:</strong>")
+            f.write(info.encode())
+            f.write(("<br><a href=\"%s\">back</a>" %
+                     self.headers['referer']).encode())
+            f.write(b"<hr><small>Powerd By: bones7456, check new version at ")
+            f.write(b"<a href=\"http://li2z.cn/?s=SimpleHTTPServerWithUpload\">")
+            f.write(b"here</a>.</small></body>\n</html>\n")
         else:
-            f.write(b"<strong>Failed:</strong>")
-        f.write(info.encode())
-        f.write(("<br><a href=\"%s\">back</a>" %
-                 self.headers['referer']).encode())
-        f.write(b"<hr><small>Powerd By: bones7456, check new version at ")
-        f.write(b"<a href=\"http://li2z.cn/?s=SimpleHTTPServerWithUpload\">")
-        f.write(b"here</a>.</small></body>\n</html>\n")
+            print('sdgffh')
+            result = open('result.html', 'r').read()
+            result = result.replace('__FILE__', info)
+            f.write(result.encode())
+
         length = f.tell()
         f.seek(0)
         self.send_response(200)
@@ -101,6 +109,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         if not fn:
             return (False, "Can't find out file name...")
         path = self.translate_path(self.path) + '/uploads'
+        filename = fn[0]
         fn = os.path.join(path, fn[0])
         line = self.rfile.readline()
         remainbytes -= len(line)
@@ -122,7 +131,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     preline = preline[0:-1]
                 out.write(preline)
                 out.close()
-                return (True, "File '%s' upload success!" % fn)
+                return (True, filename)
             else:
                 out.write(preline)
                 preline = line

@@ -5,7 +5,7 @@
     <base href="/">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Practia | </title>
+    <title>Practia | Neural Printer</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
@@ -23,6 +23,11 @@
             <div class="nav-wrapper z-depth-1"> <a href="/" class="brand-logo"><img src="images/logo.png" alt="Practia" class="responsive-img" ></a> </div>
         </nav>
     </header>
+    <div class="progress-bar">
+        <div class="progress z-depth-1 hide">
+            <div class="indeterminate"></div>
+        </div>
+    </div>
     <main>
         <div class="row xs-pl-20 xs-pr-20">
             <div class="col s12">
@@ -35,7 +40,7 @@
             </div>
         </div>
         <div class="row">
-            <form class="col s12" ENCTYPE="multipart/form-data" method="post">
+            <form id="form-file" class="col s12" ENCTYPE="multipart/form-data" method="post">
                 <div class="row">
                     <div class="input-field col s12 m6"> <input id="first_name" type="text" required> <label for="first_name">* Nombre</label> </div>
                     <div class="input-field col s12 m6">
@@ -43,9 +48,8 @@
                 </div>
                 <div class="row">
                     <div class="file-field input-field col s12 m8">
-                        <div class="btn"> <span>Imagen</span> <input name="file" type="file" required> </div>
-                        <div class="file-path-wrapper">
-                        <input class="file-path validate" type="text"> </div>
+                        <div class="btn"><i class="material-icons left">perm_media</i><span>Imagen</span> <input name="file" type="file" required>                            </div>
+                        <div class="file-path-wrapper"> <input class="file-path" type="text"> </div>
                     </div>
                     <div class="input-field col s12 m4"> <select class="icons" required>
                             <option value="" disabled selected>Selecciona un estilo</option>
