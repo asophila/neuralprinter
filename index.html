@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
     <link href="css/less-space.css" rel="stylesheet" type="text/css">
-    <link type="text/css" rel="stylesheet" href="css/main.css" media="screen,projection" />
+    <link type="text/css" rel="stylesheet" href="css/practia.css" media="screen,projection" />
     <!-- endinject -->
 </head>
 
@@ -42,30 +42,35 @@
         <div class="row">
             <form id="form-file" class="col s12" ENCTYPE="multipart/form-data" method="post">
                 <div class="row">
-                    <div class="input-field col s12 m6"> <input id="first_name" type="text" required> <label for="first_name">* Nombre</label> </div>
-                    <div class="input-field col s12 m6">
-                    <input id="last_name" type="text"> <label for="last_name">Apellido</label> </div>
+                    <div class="input-field col s12 m6"> <input name="first_name" id="first_name" type="text" required> <label for="first_name">* Nombre</label></div>
+                    <div class="input-field col s12 m6"> <input name="last_name" id="last_name" type="text"> <label for="last_name">Apellido</label> </div>
                 </div>
                 <div class="row">
-                    <div class="file-field input-field col s12 m8">
-                        <div class="btn"><i class="material-icons left">perm_media</i><span>Imagen</span> <input name="file" type="file" required>                            </div>
-                        <div class="file-path-wrapper"> <input class="file-path" type="text"> </div>
-                    </div>
-                    <div class="input-field col s12 m4"> <select class="icons" required>
+                    <div class="input-field col s12"> <input name="code" id="code" type="text" required> <label for="code">* Código</label></div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m4 push-m8"> <select name="style" class="icons" required>
                             <option value="" disabled selected>Selecciona un estilo</option>
                             <option value="1" data-icon="images/styles/practia.jpg" class="left circle">Mosaico</option>
                             <option value="2" data-icon="images/styles/practia.jpg" class="left circle">Option 2</option>
                             <option value="3" data-icon="images/styles/QR.png" class="left circle">Option 3</option>
                         </select> <label>* Estilo</label> </div>
+                    <div class="file-field input-field col s12 m8 pull-m4">
+                        <div class="btn"><i class="material-icons left">perm_media</i><span>Imagen</span> <input name="file" type="file" required>                            </div>
+                        <div class="file-path-wrapper"> <input class="file-path" type="text"> </div>
+                    </div>
                 </div>
                 <div class="row center-align"> <button class="btn waves-effect waves-light btn-large" type="submit" name="action">Enviar<i class="material-icons right">send</i></button>                    </div>
             </form>
         </div>
     </main>
     <footer> </footer>
+    <div class="overlay fixed hide"></div>
+    <!-- inject:css -->
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/materialize.min.js"></script>
     <script type="text/javascript" src="js/practia.js"></script>
+    <!-- endinject -->
 </body>
 
 </html>

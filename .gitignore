@@ -1,4 +1,6 @@
 uploads/
+process/
+print/
 __pycache__/
 *.pyc
 *.bak
