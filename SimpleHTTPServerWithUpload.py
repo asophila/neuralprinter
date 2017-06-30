@@ -194,7 +194,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         line = self.rfile.readline()
         remainbytes -= len(line)
 
-        print('FILE #############################################')
+        #print('FILE #############################################')
         line = self.rfile.readline()
         remainbytes -= len(line)
         fn = re.findall(

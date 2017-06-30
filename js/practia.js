@@ -13,6 +13,12 @@ $("#form-file").submit(function (event) {
 });
 
 $(document).ready(function () {
+    var code = getUrlParameter('code');
+    if(code){
+        $('#code').val(code);
+        Materialize.updateTextFields();
+    }
+
     $('select').material_select();
 
     // for HTML5 "required" attribute
@@ -20,3 +26,17 @@ $(document).ready(function () {
     $(".file-field > .btn input[type=file]").css({ bottom: "18px" });
 });
 
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
