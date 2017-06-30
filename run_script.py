@@ -19,14 +19,16 @@ def find_next_precess(sc):
         style = next_style[1]
         image_id = next_style[2]
         # TODO process image
+        
         filename = db.get_image_process(image_id)
+        """
         path_styled = filename + '_styled.jpg'
         os.system('python fast-neural-style-master/neural_style/neural_style.py eval --content-image ' + filename +' --model ./fast-neural-style-master/model/mosaic.pth --output-image ' + path_styled + ' --cuda 0')
 
         while not os.path.exists(path_styled):
             process = True
-
-        db.insert_style(next_style[0], path_styled)
+        """
+        db.insert_style(next_style[0], filename)
         # os.remove(filename)
         print('-----------------------------------')
         db.update_style(next_style[0], 'PROCESADO')
@@ -57,5 +59,5 @@ def find_next_print(sc):
 
 
 s.enter(1, 1, find_next_precess, (s,))
-s.enter(1, 1, find_next_print, (s,))
+#s.enter(1, 1, find_next_print, (s,))
 s.run()

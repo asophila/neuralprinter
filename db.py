@@ -3,6 +3,7 @@
 import os
 import sqlite3
 import time
+from PIL import Image
 
 
 def createDB():
@@ -57,6 +58,11 @@ def insert_image(usuario, nombre, ext, imagen, estilo, code, timestamp=''):
         return False, 'El código ya ha sido usado'
 
     _timestamp = timestamp if timestamp != '' else time.time()
+
+    bmp = Image.open(imagen)
+    bmp = bmp.resize((1366, 768))
+    bmp.save(imagen, 'JPEG')
+
     with open(imagen, 'rb') as input_file:
         ablob = input_file.read()
         conn = sqlite3.connect(database)
