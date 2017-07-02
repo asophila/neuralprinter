@@ -62,8 +62,8 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         """Serve a POST request."""
         info = self.deal_post_data()
+        info['ip'] = self.client_address[0]
         print(info)
-        print("by: ", self.client_address)
 
         f = BytesIO()
 
@@ -72,12 +72,11 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             h5 = '<h5 class="error">' + info['message'] + '</h5>'
         else:
             # TODO
-            insert_image = db.insert_image(info['first_name'],
-                                           info['filename'], 'jpg', info['path'], info['style'], info['code'])
-            print('INSERT IMAGE:', insert_image)
+            insert_image = db.insert_image(info)
+            #print('INSERT IMAGE:', insert_image)
             if insert_image[0]:
                 h5 = '<h5>' + 'Se ha enviado a imprimir tu imagen: ' + \
-                    info['filename'] + '</h5>'
+                    info['name'] + '</h5>'
             else:
                 h5 = '<h5 class="error">' + insert_image[1] + '</h5>'
 
@@ -114,98 +113,137 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             data['message'] = "Content NOT begin with boundary"
             return data
 
-        # print('FIRST_NAME #############################################')
+        # print('NOMBRE #############################################')
         line = self.rfile.readline()
         remainbytes -= len(line)
         fn = re.findall(
-            r'Content-Disposition.*name="first_name"', line.decode())
+            r'Content-Disposition.*name="nombre"', line.decode())
         if not fn:
             data['error'] = True
             data['message'] = "Falta el nombre..."
             return data
         line = self.rfile.readline()
         remainbytes -= len(line)
-        first_name = self.rfile.readline()
-        remainbytes -= len(first_name)
-        first_name = first_name.decode()[0:-1]
-        if first_name.endswith('\r'):
-            first_name = first_name[0:-1]
-        data['first_name'] = first_name
+        value = self.rfile.readline()
+        remainbytes -= len(value)
+        value = value.decode()[0:-1]
+        if value.endswith('\r'):
+            value = value[0:-1]
+        data['usuario'] = value
         line = self.rfile.readline()
         remainbytes -= len(line)
 
-        # print('LAST_NAME #############################################')
+        # print('CORREO #############################################')
         line = self.rfile.readline()
         remainbytes -= len(line)
         fn = re.findall(
-            r'Content-Disposition.*name="last_name"', line.decode())
+            r'Content-Disposition.*name="correo"', line.decode())
         if not fn:
             data['error'] = True
             data['message'] = "Falta el apellido..."
             return data
         line = self.rfile.readline()
         remainbytes -= len(line)
-        last_name = self.rfile.readline()
-        remainbytes -= len(last_name)
-        last_name = last_name.decode()[0:-1]
-        if last_name.endswith('\r'):
-            last_name = last_name[0:-1]
-        data['last_name'] = last_name
+        value = self.rfile.readline()
+        remainbytes -= len(value)
+        value = value.decode()[0:-1]
+        if value.endswith('\r'):
+            value = value[0:-1]
+        data['correo'] = value
         line = self.rfile.readline()
         remainbytes -= len(line)
 
-        # print('CODE #############################################')
+        # print('EMPRESA #############################################')
         line = self.rfile.readline()
         remainbytes -= len(line)
         fn = re.findall(
-            r'Content-Disposition.*name="code"', line.decode())
+            r'Content-Disposition.*name="empresa"', line.decode())
+        if not fn:
+            data['error'] = True
+            data['message'] = "Falta la empresa..."
+            return data
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        value = self.rfile.readline()
+        remainbytes -= len(value)
+        value = value.decode()[0:-1]
+        if value.endswith('\r'):
+            value = value[0:-1]
+        data['empresa'] = value
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+
+        # print('CARGO #############################################')
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        fn = re.findall(
+            r'Content-Disposition.*name="cargo"', line.decode())
+        if not fn:
+            data['error'] = True
+            data['message'] = "Falta el cargo..."
+            return data
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        value = self.rfile.readline()
+        remainbytes -= len(value)
+        value = value.decode()[0:-1]
+        if value.endswith('\r'):
+            value = value[0:-1]
+        data['cargo'] = value
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+
+        # print('CODIGO #############################################')
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        fn = re.findall(
+            r'Content-Disposition.*name="codigo"', line.decode())
         if not fn:
             data['error'] = True
             data['message'] = "Falta el código..."
             return data
         line = self.rfile.readline()
         remainbytes -= len(line)
-        code = self.rfile.readline()
-        remainbytes -= len(last_name)
-        code = code.decode()[0:-1]
-        if code.endswith('\r'):
-            code = code[0:-1]
-        data['code'] = code
+        value = self.rfile.readline()
+        remainbytes -= len(value)
+        value = value.decode()[0:-1]
+        if value.endswith('\r'):
+            value = value[0:-1]
+        data['codigo'] = value
         line = self.rfile.readline()
         remainbytes -= len(line)
 
-        # print('STYLE #############################################')
+        # print('ESTILO #############################################')
         line = self.rfile.readline()
         remainbytes -= len(line)
         fn = re.findall(
-            r'Content-Disposition.*name="style"', line.decode())
+            r'Content-Disposition.*name="estilo"', line.decode())
         if not fn:
             data['error'] = True
             data['message'] = "Falta el estilo..."
             return data
         line = self.rfile.readline()
         remainbytes -= len(line)
-        style = self.rfile.readline()
-        remainbytes -= len(style)
-        style = style.decode()[0:-1]
-        if style.endswith('\r'):
-            style = style[0:-1]
-        data['style'] = style
+        value = self.rfile.readline()
+        remainbytes -= len(value)
+        value = value.decode()[0:-1]
+        if value.endswith('\r'):
+            value = value[0:-1]
+        data['estilo'] = value
         line = self.rfile.readline()
         remainbytes -= len(line)
 
-        #print('FILE #############################################')
+        #print('IMAGEN #############################################')
         line = self.rfile.readline()
         remainbytes -= len(line)
         fn = re.findall(
-            r'Content-Disposition.*name="file"; filename="(.*)"', line.decode())
+            r'Content-Disposition.*name="imagen"; filename="(.*)"', line.decode())
         if not fn:
             data['error'] = True
-            data['message'] = "Can't find out file name..."
+            data['message'] = "No se encuentra el nombre de la imagen..."
             return data
         path = self.translate_path(self.path) + '/uploads'
         filename = fn[0]
-        data['filename'] = filename
         fn = os.path.join(path, fn[0])
         line = self.rfile.readline()
         remainbytes -= len(line)
@@ -215,7 +253,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             out = open(fn, 'wb')
         except IOError:
             data['error'] = True
-            data['message'] = "Can't create file to write, do you have permission to write?"
+            data['message'] = "No se pudo enviar la imagen"
             return data
 
         preline = self.rfile.readline()
@@ -229,6 +267,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     preline = preline[0:-1]
                 out.write(preline)
                 out.close()
+                data['name'], data['ext'] = os.path.splitext(filename)
                 data['path'] = 'uploads/' + filename
                 data['error'] = False
                 return data
@@ -236,7 +275,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 out.write(preline)
                 preline = line
         data['error'] = True
-        data['message'] = "Unexpect Ends of data."
+        data['message'] = "Error al enviar los datos"
         return data
 
     def send_head(self):

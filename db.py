@@ -15,33 +15,25 @@ def createDB():
                     id INTEGER PRIMARY KEY ASC,
                     key TEXT,
                     status INTEGER,
-                    image_style_id INTEGER REFERENCES image_style(id)
+                    image_id INTEGER REFERENCES image(id)
                     )''')
 
     # Create table image
-    # status: [ ]
+    # status: ['A_PROCESAR', 'PROCESANDO', 'PROCESADO', 'IMPRIMIENDO', 'IMPRESO', 'ERROR']
     c.execute('''CREATE TABLE image(
                     id INTEGER PRIMARY KEY ASC,
-                    user TEXT,
+                    usuario TEXT,
+                    ip TEXT,
+                    correo TEXT,
+                    empresa TEXT,
+                    cargo TEXT,
+                    estilo TEXT,
                     name TEXT,
-                    timestamp REAL,
                     ext TEXT,
-                    image BLOB,
+                    imagen BLOB,
+                    imagen_style BLOB,
+                    timestamp REAL,
                     status TEXT,
-                    error_message TEXT
-                    )''')
-
-    # Create table image_style
-    # style: ['mosaic', '']
-    # status: ['A_PROCESAR', 'PROCESANDO', 'PROCESADO', 'IMPRIMIENDO', 'IMPRESO', 'ERROR']
-    c.execute('''CREATE TABLE image_style(
-                    id INTEGER PRIMARY KEY ASC,
-                    image_id INTEGER REFERENCES image(id),
-                    timestamp REAL,
-                    style TEXT,
-                    ext TEXT,
-                    image BLOB,
-                    status INTEGER,
                     error_message TEXT
                     )''')
 
@@ -53,8 +45,8 @@ def createDB():
 # imagen es la ruta del archivo
 
 
-def insert_image(usuario, nombre, ext, imagen, estilo, code, timestamp=''):
-    if not valid_code(code):
+def insert_image(info, timestamp=''):
+    if not valid_code(info['codigo']):
         return False, 'El código ya ha sido usado'
 
     _timestamp = timestamp if timestamp != '' else time.time()
@@ -63,44 +55,38 @@ def insert_image(usuario, nombre, ext, imagen, estilo, code, timestamp=''):
     #bmp = bmp.resize((1366, 768))
     #bmp.save(imagen, 'JPEG')
 
-    with open(imagen, 'rb') as input_file:
+    with open(info['path'], 'rb') as input_file:
         ablob = input_file.read()
         conn = sqlite3.connect(database)
         c = conn.cursor()
         # Insert a row of data
-        c.execute('''INSERT INTO image(user, name, timestamp, ext, image, status)
-                        VALUES (?, ?, ?, ?, ?, ?)''',
-                  (usuario, nombre, _timestamp, ext, sqlite3.Binary(ablob), ''))
+        c.execute('''INSERT INTO image(usuario, ip, correo, empresa, cargo, estilo, name, ext, imagen, timestamp, status)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?)''',
+                  (info['usuario'], info['ip'], info['correo'], info['empresa'], info['cargo'], info['estilo'], info['name'], info['ext'], sqlite3.Binary(ablob), _timestamp, 'A_PROCESAR'))
         image_id = c.lastrowid
 
-        c.execute('''INSERT INTO image_style(image_id, timestamp, style, status)
-                        VALUES (?, ?, ?, ?)''',
-                  (image_id, _timestamp, estilo, 'A_PROCESAR'))
-        image_style_id = c.lastrowid
-
-        c.execute('''UPDATE code SET status = 1, image_style_id = ?
+        c.execute('''UPDATE code SET status = 1, image_id = ?
                         WHERE key = ?''',
-                  (image_style_id, code))
+                  (image_id, info['codigo']))
 
         conn.commit()
         conn.close()
     return True, ''
 
 
-def insert_style(image_style_id, imagen, timestamp=''):
+def insert_style(image_id, imagen, timestamp=''):
     _timestamp = timestamp if timestamp != '' else time.time()
     with open(imagen, 'rb') as input_file:
         ablob = input_file.read()
         conn = sqlite3.connect(database)
         c = conn.cursor()
         # Update a row of data
-        c.execute('''UPDATE image_style SET
+        c.execute('''UPDATE image SET
                     timestamp = ?,
-                    ext = ?,
-                    image = ?,
+                    imagen_style = ?,
                     status = ?
                     WHERE id = ?''',
-                  (_timestamp, 'jpg', sqlite3.Binary(ablob), 'PROCESADO', image_style_id))
+                  (_timestamp, sqlite3.Binary(ablob), 'PROCESADO', image_id))
         conn.commit()
         conn.close()
     return
@@ -110,76 +96,54 @@ def get_next_process():
     conn = sqlite3.connect(database)
     c = conn.cursor()
 
-    c.execute(
-        'SELECT id, style, image_id FROM image_style WHERE status = "A_PROCESAR" ORDER BY id ASC')
-    images = c.fetchall()
-    # print(images)
-    if len(images) > 0:
-        conn.close()
-        return images[0]
-
+    try:
+        c.execute(
+            'SELECT id, estilo, imagen, ext, timestamp FROM image WHERE status = "A_PROCESAR" ORDER BY id ASC')
+        _id, estilo, ablob, ext, afile = c.fetchone()
+        if _id > 0:
+            filename = 'process/' + str(afile) + ext
+            with open(filename, 'wb') as output_file:
+                output_file.write(ablob)
+            conn.close()
+            return _id, estilo, filename, str(afile), ext
+    except:
+        error = True
     conn.close()
     return None
-
 
 def get_next_print():
     conn = sqlite3.connect(database)
     c = conn.cursor()
 
-    c.execute(
-        'SELECT id FROM image_style WHERE status = "PROCESADO" ORDER BY id ASC')
-    images = c.fetchall()
-    # print(images)
-    if len(images) > 0:
-        conn.close()
-        return images[0]
-
+    try:
+        c.execute(
+            'SELECT id, imagen_style, ext, timestamp FROM image WHERE status = "PROCESADO" ORDER BY id ASC')
+        _id, ablob, ext, afile = c.fetchone()
+        if _id > 0:
+            filename = 'print/' + str(afile) + ext
+            with open(filename, 'wb') as output_file:
+                output_file.write(ablob)
+            conn.close()
+            return _id, filename
+    except:
+        error = True
     conn.close()
     return None
 
 
-def update_style(image_style_id, status, timestamp=''):
+def update_style(image_id, status, timestamp=''):
     _timestamp = timestamp if timestamp != '' else time.time()
     conn = sqlite3.connect(database)
     c = conn.cursor()
     # Update a row of data
-    c.execute('''UPDATE image_style SET
+    c.execute('''UPDATE image SET
                 timestamp = ?,
                 status = ?
                 WHERE id = ?''',
-              (_timestamp, status, image_style_id))
+              (_timestamp, status, image_id))
     conn.commit()
     conn.close()
-    return
-
-
-def get_style_print(imagen_style_id):
-    conn = sqlite3.connect(database)
-    c = conn.cursor()
-    # Update a row of data
-    c.execute(
-        'SELECT image, ext, timestamp FROM image_style WHERE id = ?', (imagen_style_id,))
-    ablob, ext, afile = c.fetchone()
-    filename = 'print/' + str(afile) + '.' + ext
-    with open(filename, 'wb') as output_file:
-        output_file.write(ablob)
-    conn.close()
-    return filename
-
-
-def get_image_process(imagen_id):
-    conn = sqlite3.connect(database)
-    c = conn.cursor()
-    # Update a row of data
-    c.execute(
-        'SELECT image, ext, timestamp FROM image WHERE id = ?', (imagen_id,))
-    ablob, ext, afile = c.fetchone()
-    filename = 'process/' + str(afile) + '.' + ext
-    with open(filename, 'wb') as output_file:
-        output_file.write(ablob)
-    conn.close()
-    return filename
-
+    return True
 
 def generate_codes(num_codes):
     conn = sqlite3.connect(database)
@@ -200,8 +164,7 @@ def generate_codes(num_codes):
             c.execute('SELECT key FROM code')
             codes = c.fetchall()
     conn.close()
-    return
-
+    return True
 
 def valid_code(code):
     conn = sqlite3.connect(database)
@@ -215,7 +178,6 @@ def valid_code(code):
     conn.close()
     return False
 
-
 def list_codes():
     conn = sqlite3.connect(database)
     c = conn.cursor()
@@ -226,15 +188,12 @@ def list_codes():
         print('Key:', code[1], 'Status:', code[2])
         if code[2] > 0:
             c.execute(
-                'SELECT image_id FROM image_style WHERE id = ?', (code[3],))
-            img_style = c.fetchone()
-            c.execute('SELECT name FROM image WHERE id = ?', (img_style[0],))
+                'SELECT name, estilo FROM image WHERE id = ?', (code[3],))
             img = c.fetchone()
-            print('\timage:', img[0])
+            print('\timage:', img[0], '>>', img[1])
 
     conn.close()
-    return
-
+    return True
 
 def list_images():
     # usar con precaucion con db grande
@@ -242,18 +201,11 @@ def list_images():
     c = conn.cursor()
     # Do this instead
 
-    c.execute('SELECT id, user, name FROM image ORDER BY id ASC')
+    c.execute('SELECT id, usuario, name, estilo FROM image ORDER BY id ASC')
     images = c.fetchall()
     # print(len(images))
     for image in images:
-        print('Image:', image[2], 'Upload by:', image[1])
-
-        c.execute(
-            'SELECT id, style, status FROM image_style WHERE image_id=?', (image[0],))
-        style_images = c.fetchall()
-        for style in style_images:
-            print('\t(ID:', str(style[0]) + ')',
-                  'Style:', style[1], '[' + style[2] + ']')
+        print('Imagen:', image[2], '>>', image[3], 'Upload by:', image[1])
 
     conn.close()
     return

@@ -12,9 +12,9 @@ def find_next_print(sc):
     if next_print:
         print('-----------------------------------')
         db.update_style(next_print[0], 'IMPRIMIENDO')
-        filename = db.get_style_print(next_print[0])
+        filename = next_print[1]
         print(str(time.time()), 'imprimir imagen:', filename)
-        printer.print_image(filename)
+        #printer.print_image(filename)
         db.update_style(next_print[0], 'IMPRESO')
         # os.remove(filename)
         print('-----------------------------------')

@@ -14,12 +14,9 @@ def find_next_precess(sc):
         print('-----------------------------------')
 
         style = next_style[1]
-        image_id = next_style[2]
-        # TODO process image
+        filename = next_style[2]
         
-        filename = db.get_image_process(image_id)
-        
-        path_styled = filename + '_styled.jpg'
+        path_styled = 'process/' + next_style[3] + '_' + style + next_style[4]
         model = 'model/' + style + '.pth'
         print(model)
         os.system('python neural_style/neural_style.py eval --content-image ' + filename +' --model ' + model +' --output-image ' + path_styled + ' --content-scale 5 --cuda 0')
@@ -27,8 +24,9 @@ def find_next_precess(sc):
         while not os.path.exists(path_styled):
             process = True
         
-        db.insert_style(next_style[0], filename)
-        # os.remove(filename)
+        db.insert_style(next_style[0], path_styled)
+        #os.remove(filename)
+        os.remove(path_styled)
         print('-----------------------------------')
         db.update_style(next_style[0], 'PROCESADO')
         print(str(time.time()), 'procesada imagen', next_style[0]) 

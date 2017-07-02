@@ -4,4 +4,4 @@ print/
 __pycache__/
 *.pyc
 *.bak
-database.db
+*.db

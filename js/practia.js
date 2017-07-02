@@ -1,11 +1,3 @@
-$(window).bind('scroll', function () {
-    if ($(window).scrollTop() > 70) {
-        $('.progress-bar').addClass('fixed');
-    } else {
-        $('.progress-bar').removeClass('fixed');
-    }
-});
-
 $("#form-file").submit(function (event) {
     $('.overlay').removeClass('hide');
     $('.progress').removeClass('hide');
@@ -13,9 +5,9 @@ $("#form-file").submit(function (event) {
 });
 
 $(document).ready(function () {
-    var code = getUrlParameter('code');
+    var code = getUrlParameter('codigo');
     if(code){
-        $('#code').val(code);
+        $('#codigo').val(code);
         Materialize.updateTextFields();
     }
 
