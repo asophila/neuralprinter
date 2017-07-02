@@ -59,9 +59,9 @@ def insert_image(usuario, nombre, ext, imagen, estilo, code, timestamp=''):
 
     _timestamp = timestamp if timestamp != '' else time.time()
 
-    bmp = Image.open(imagen)
-    bmp = bmp.resize((1366, 768))
-    bmp.save(imagen, 'JPEG')
+    #bmp = Image.open(imagen)
+    #bmp = bmp.resize((1366, 768))
+    #bmp.save(imagen, 'JPEG')
 
     with open(imagen, 'rb') as input_file:
         ablob = input_file.read()
@@ -271,4 +271,4 @@ if not os.path.exists('print'):
 
 #print(insert_image('gsalazar', 'practia', 'jpg', 'images/practia.jpg', 'mosaic', 1))
 
-# list_images()
+#list_images()

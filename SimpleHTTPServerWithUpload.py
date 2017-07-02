@@ -73,7 +73,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         else:
             # TODO
             insert_image = db.insert_image(info['first_name'],
-                                           info['filename'], 'jpg', info['path'], 'mosaic', info['code'])
+                                           info['filename'], 'jpg', info['path'], info['style'], info['code'])
             print('INSERT IMAGE:', insert_image)
             if insert_image[0]:
                 h5 = '<h5>' + 'Se ha enviado a imprimir tu imagen: ' + \
