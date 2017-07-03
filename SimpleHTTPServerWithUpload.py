@@ -315,7 +315,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             else:
                 return self.list_directory(path)
 
-        if self.path.endswith('getqr.html'):
+        if self.path.endswith('.py') or self.path.endswith('.txt'):
             print(self.client_address)
             if '127.0.0.1' not in self.client_address:
                 return self.list_directory(self.path)
