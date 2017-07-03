@@ -120,14 +120,14 @@ def get_next_print():
 
     try:
         c.execute(
-            'SELECT id, imagen_style, ext, timestamp FROM image WHERE status = "PROCESADO" ORDER BY id ASC')
-        _id, ablob, ext, afile = c.fetchone()
+            'SELECT id, imagen_style, ext, timestamp, correo FROM image WHERE status = "PROCESADO" ORDER BY id ASC')
+        _id, ablob, ext, afile, correo = c.fetchone()
         if _id > 0:
             filename = 'print/' + str(afile) + ext
             with open(filename, 'wb') as output_file:
                 output_file.write(ablob)
             conn.close()
-            return _id, filename
+            return _id, filename, correo
     except:
         error = True
     conn.close()

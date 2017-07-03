@@ -1,4 +1,5 @@
 import db
+import send_email as send
 import print_windows as printer
 #import print_linux as printer
 
@@ -14,6 +15,7 @@ def find_next_print(sc):
         print('-----------------------------------')
         db.update_style(next_print[0], 'IMPRIMIENDO')
         filename = next_print[1]
+        send.email([next_print[2]], [filename])
         print(str(time.time()), 'imprimir imagen:', filename)
         printer.print_image(filename, False)  # windows
         # printer.print_image(filename) #linux
