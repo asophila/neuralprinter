@@ -1,11 +1,12 @@
 import db
-#import print_windows as printer
-import print_linux as printer
+import print_windows as printer
+#import print_linux as printer
 
 import os
 import sched
 import time
 s = sched.scheduler(time.time, time.sleep)
+
 
 def find_next_print(sc):
     next_print = db.get_next_print()
@@ -14,7 +15,8 @@ def find_next_print(sc):
         db.update_style(next_print[0], 'IMPRIMIENDO')
         filename = next_print[1]
         print(str(time.time()), 'imprimir imagen:', filename)
-        #printer.print_image(filename)
+        printer.print_image(filename, False)  # windows
+        # printer.print_image(filename) #linux
         db.update_style(next_print[0], 'IMPRESO')
         # os.remove(filename)
         print('-----------------------------------')
@@ -23,6 +25,7 @@ def find_next_print(sc):
 
     # do your stuff
     s.enter(10, 1, find_next_print, (sc,))
+
 
 s.enter(1, 1, find_next_print, (s,))
 s.run()

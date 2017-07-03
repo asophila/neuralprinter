@@ -1,5 +1,4 @@
 import db
 
-# db.get_style_print(1)
-#db.generate_codes(5)
+db.add_codes('practiapintame-codes.txt')  # TODO eliminar en prod
 db.list_codes()

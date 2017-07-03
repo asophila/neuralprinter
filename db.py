@@ -46,8 +46,9 @@ def createDB():
 
 
 def insert_image(info, timestamp=''):
-    if not valid_code(info['codigo']):
-        return False, 'El código ya ha sido usado'
+    valid = valid_code(info['codigo'])
+    if not valid[0]:
+        return False, valid[1]
 
     _timestamp = timestamp if timestamp != '' else time.time()
 
@@ -111,6 +112,7 @@ def get_next_process():
     conn.close()
     return None
 
+
 def get_next_print():
     conn = sqlite3.connect(database)
     c = conn.cursor()
@@ -145,26 +147,26 @@ def update_style(image_id, status, timestamp=''):
     conn.close()
     return True
 
-def generate_codes(num_codes):
+
+def add_codes(filename):
     conn = sqlite3.connect(database)
     c = conn.cursor()
     # Do this instead
     c.execute('SELECT key FROM code')
     codes = c.fetchall()
 
-    i = 0
-    while i < num_codes:
-        code = len(codes) + 1
-        if code not in codes:
+    new_codes = open(filename).read().replace(
+        '\r', '').replace('\n', '').split(',')
+    print(codes)
+    for code in new_codes:
+        if (code,) not in codes:
             c.execute('''INSERT INTO code(key, status)
                         VALUES (?, ?)''',
                       (code, 0))
-            conn.commit()
-            i += 1
-            c.execute('SELECT key FROM code')
-            codes = c.fetchall()
+    conn.commit()
     conn.close()
     return True
+
 
 def valid_code(code):
     conn = sqlite3.connect(database)
@@ -172,11 +174,16 @@ def valid_code(code):
     # Do this instead
     c.execute('SELECT status FROM code WHERE key = ?', (code,))
     _code = c.fetchone()
-    if _code and _code[0] == 0:
-        conn.close()
-        return True
+    if _code:
+        if _code[0] == 0:
+            conn.close()
+            return True, ''
+        else:
+            conn.close()
+            return False, 'El código ya ha sido usado'
     conn.close()
-    return False
+    return False, 'Código no válido'
+
 
 def list_codes():
     conn = sqlite3.connect(database)
@@ -184,8 +191,10 @@ def list_codes():
     # Do this instead
     c.execute('SELECT * FROM code ORDER BY id ASC')
     codes = c.fetchall()
+    i = 1
     for code in codes:
-        print('Key:', code[1], 'Status:', code[2])
+        print(str(i), 'Key:', code[1], 'Status:', code[2])
+        i += 1
         if code[2] > 0:
             c.execute(
                 'SELECT name, estilo FROM image WHERE id = ?', (code[3],))
@@ -194,6 +203,7 @@ def list_codes():
 
     conn.close()
     return True
+
 
 def list_images():
     # usar con precaucion con db grande
@@ -223,4 +233,4 @@ if not os.path.exists('print'):
 
 #print(insert_image('gsalazar', 'practia', 'jpg', 'images/practia.jpg', 'mosaic', 1))
 
-#list_images()
+# list_images()

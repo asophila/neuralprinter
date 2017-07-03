@@ -71,17 +71,16 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         if info['error']:
             h5 = '<h5 class="error">' + info['message'] + '</h5>'
         else:
-            # TODO
             insert_image = db.insert_image(info)
             #print('INSERT IMAGE:', insert_image)
             if insert_image[0]:
                 h5 = '<h5>' + 'Se ha enviado a imprimir tu imagen: ' + \
                     info['name'] + '</h5>'
+                os.remove(info['path'])
             else:
                 h5 = '<h5 class="error">' + insert_image[1] + '</h5>'
 
         result = result.replace('__RESULT__', h5)
-        os.remove(info['path'])
 
         f.write(result.encode())
 
@@ -95,6 +94,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         if f:
             self.copyfile(f, self.wfile)
             f.close()
+        return
 
     def deal_post_data(self):
         data = {}
@@ -210,6 +210,14 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         if value.endswith('\r'):
             value = value[0:-1]
         data['codigo'] = value
+
+        # validar codigo
+        valid_code = db.valid_code(value)
+        if not valid_code[0]:
+            data['error'] = True
+            data['message'] = valid_code[1]
+            # return data
+
         line = self.rfile.readline()
         remainbytes -= len(line)
 
@@ -233,7 +241,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         line = self.rfile.readline()
         remainbytes -= len(line)
 
-        #print('IMAGEN #############################################')
+        # print('IMAGEN #############################################')
         line = self.rfile.readline()
         remainbytes -= len(line)
         fn = re.findall(
