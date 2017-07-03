@@ -66,9 +66,10 @@ def insert_image(info, timestamp=''):
                   (info['usuario'], info['ip'], info['correo'], info['empresa'], info['cargo'], info['estilo'], info['name'], info['ext'], sqlite3.Binary(ablob), _timestamp, 'A_PROCESAR'))
         image_id = c.lastrowid
 
-        c.execute('''UPDATE code SET status = 1, image_id = ?
+        if not info['codigo'] == 'test' and not info['codigo'] == 'ppmI+Dangs':
+            c.execute('''UPDATE code SET status = 1, image_id = ?
                         WHERE key = ?''',
-                  (image_id, info['codigo']))
+                      (image_id, info['codigo']))
 
         conn.commit()
         conn.close()
@@ -168,6 +169,16 @@ def add_codes(filename):
     return True
 
 
+def set_code(code, status):
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    # Do this instead
+    c.execute('UPDATE code SET status = ? WHERE key = ?', (status, code))
+    conn.commit()
+    conn.close()
+    return
+
+
 def valid_code(code):
     conn = sqlite3.connect(database)
     c = conn.cursor()
@@ -195,7 +206,7 @@ def list_codes():
     for code in codes:
         print(str(i), 'Key:', code[1], 'Status:', code[2])
         i += 1
-        if code[2] > 0:
+        if code[2] > 0 and code[3]:
             c.execute(
                 'SELECT name, estilo FROM image WHERE id = ?', (code[3],))
             img = c.fetchone()
