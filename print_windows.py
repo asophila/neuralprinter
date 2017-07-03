@@ -45,7 +45,7 @@ def print_image(file_name, print_image=False):
     hDC = win32ui.CreateDC()
     hDC.CreatePrinterDC(printer_name)
     printable_area = hDC.GetDeviceCaps(HORZRES), hDC.GetDeviceCaps(VERTRES)
-    printable_area = 1440, 1920
+    #printable_area = 1440, 1920
     printer_size = hDC.GetDeviceCaps(
         PHYSICALWIDTH), hDC.GetDeviceCaps(PHYSICALHEIGHT)
     printer_margins = hDC.GetDeviceCaps(
