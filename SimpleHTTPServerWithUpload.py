@@ -16,6 +16,7 @@ __home_page__ = "http://li2z.cn/"
 
 cookies = []
 
+import codecs
 import os
 import posixpath
 import http.server
@@ -67,22 +68,23 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         f = BytesIO()
 
-        result = open('result.html', 'r').read()
+        result = codecs.open('result.html', 'r', 'utf-8').read()
+        print(result)
         if info['error']:
             h5 = '<h5 class="error">' + info['message'] + '</h5>'
         else:
             insert_image = db.insert_image(info)
             #print('INSERT IMAGE:', insert_image)
             if insert_image[0]:
-                h5 = '<h5>' + 'Se ha enviado a imprimir tu imagen: ' + \
-                    info['name'] + '</h5>'
+                h5 = '<h5>' + 'Se ha enviado a imprimir tu imagen <b>"' + \
+                    info['name'] + info['ext'] + '"</b></h5>'
                 os.remove(info['path'])
             else:
                 h5 = '<h5 class="error">' + insert_image[1] + '</h5>'
 
         result = result.replace('__RESULT__', h5)
 
-        f.write(result.encode())
+        f.write(result.encode('UTF-8'))
 
         length = f.tell()
         f.seek(0)

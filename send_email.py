@@ -13,11 +13,12 @@ import smtplib
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 COMMASPACE = ', '
 sender = ''
 password = ''
-smtp = 'smtp.office365.com'
+smtp = ''
 
 
 def email(recipients, attachments):
@@ -26,8 +27,8 @@ def email(recipients, attachments):
     outer['Subject'] = 'Practia te pinta'
     outer['To'] = COMMASPACE.join(recipients)
     outer['From'] = sender
-    outer.preamble = 'You will not see this in a MIME-aware mail reader.\n'
-
+    outer.preamble = ''
+    outer.attach(MIMEText('Hola\n'))
     # Add the attachments to the message
     for file in attachments:
         try:
@@ -57,3 +58,4 @@ def email(recipients, attachments):
     except:
         print("Unable to send the email.")
         raise
+
