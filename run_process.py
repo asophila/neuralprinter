@@ -29,14 +29,14 @@ def find_next_precess(sc):
 
         # procesar imagen
         path_styled = 'process/' + next_style['name'] + '_' + next_style['estilo'] + next_style['ext']           
-        #os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --content-scale 5 --cuda 0')
-        #while not os.path.exists(path_styled):
-        #    process = True
+        os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --content-scale 5 --cuda 0')
+        while not os.path.exists(path_styled):
+            process = True
 
         #TODO: cambiar por procesada
         url = 'http://practiapinta.me/upload_style.php'
-        imagen = next_style['imagen']
-        #imagen = open(path_styled, 'rb').read()
+        #imagen = next_style['imagen']
+        imagen = open(path_styled, 'rb').read()
         r = requests.post(url, data={'id': next_style['id'], 'name': next_style['name'] + '_' + next_style['estilo'] + next_style['ext'], 'imagen': imagen})
         #print(r.json())
 
