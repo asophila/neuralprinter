@@ -21,7 +21,7 @@ function get_next_to_print(){
     } else {
         $response = array(
             'error' => true,
-            'message' => 'No hay más por procesar'
+            'message' => 'No hay más por imprimir'
         );
     }
     $conn->close();

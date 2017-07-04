@@ -56,12 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         // Check file size
         else */
-        if ($_FILES["imagen"]["size"] > 700000) {
-            $uploadMessage = "La imagen es muy grande, intenta subir otra.";
-            $uploadOk = 0;
-        }
+        //if ($_FILES["imagen"]["size"] > 700000) {
+        //    $uploadMessage = "La imagen es muy grande, intenta subir otra.";
+        //   $uploadOk = 0;
+        //}
         // Allow certain file formats
-        else if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+        //else
+        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
             $uploadMessage = "Sube una imagen JPG, JPEG o PNG.";
             $uploadOk = 0;
         }
@@ -69,29 +70,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else {
             if (move_uploaded_file($_FILES["imagen"]["tmp_name"], $target_file)) {
                 $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\"";    
-            } else {
-                $uploadMessage = "No se pudo guardar tu imagen";
-                $uploadOk = 0;
-            }
-            //guardar imagen en BD
-            $image = addslashes(file_get_contents($target_file)); //SQL Injection defence!
-            $name = pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_FILENAME);
-            $ext = '.' . pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_EXTENSION);
-            $sql = "INSERT INTO `image` (`usuario`, `ip`, `correo`, `empresa`, `cargo`, `estilo`, `name`, `ext`, `imagen`, `status`)
-                                VALUES ('$usuario', '', '$correo', '$empresa', '$cargo', '$estilo', '$name', '{$ext}', '{$image}', 'A_PROCESAR')";
-            $conn = get_conn();
-            if ($conn->query($sql) === TRUE) {
-                $last_id = $conn->insert_id;
-                if($codigo != 'test' and $codigo != 'IDangs'){
-                    $sql = "UPDATE `code` SET `status` = 1, `image_id` = $last_id WHERE `key` = '$codigo'";
-                    $conn->query($sql);
+
+                //guardar imagen en BD
+                $image = addslashes(file_get_contents($target_file)); //SQL Injection defence!
+                $name = pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_FILENAME);
+                $ext = '.' . pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_EXTENSION);
+                $sql = "INSERT INTO `image` (`usuario`, `ip`, `correo`, `empresa`, `cargo`, `estilo`, `name`, `ext`, `imagen`, `status`)
+                                    VALUES ('$usuario', '', '$correo', '$empresa', '$cargo', '$estilo', '$name', '$ext', '$image', 'A_PROCESAR')";
+                $conn = get_conn();
+                if ($conn->query($sql) === TRUE) {
+                    $last_id = $conn->insert_id;
+                    if($codigo != 'test' and $codigo != 'IDangs'){
+                        $sql = "UPDATE `code` SET `status` = 1, `image_id` = $last_id WHERE `key` = '$codigo'";
+                        $conn->query($sql);
+                    }
+                    $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\""; 
+                } else {
+                    $uploadMessage = "No se pudo guardar tu imagen";
+                    $uploadOk = 0;
                 }
-                $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\""; 
+                $conn->close();
             } else {
                 $uploadMessage = "No se pudo guardar tu imagen";
                 $uploadOk = 0;
             }
-            $conn->close();
+            
         }
     }
 }
@@ -129,25 +132,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="row">
             <form id="form-file" class="col s12" action="./" method="post" enctype="multipart/form-data">
                 <div class="row">
-                    <div class="input-field col s12 m6"> <input name="usuario" id="usuario" type="text" class="validate" required> <label for="usuario">* Nombre</label></div>
-                    <div class="input-field col s12 m6"> <input name="correo" id="correo" type="email" class="validate" required> <label for="correo" data-error="Correo no válido">* Correo</label>                        </div>
+                    <div class="input-field col s12"> <input name="usuario" id="usuario" type="text" class="validate" required> <label for="usuario">* Nombre</label></div>
+                    <div class="input-field col s12"> <input name="correo" id="correo" type="email" class="validate" required> <label for="correo" data-error="Correo no válido">* Correo</label>                        </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12 m6"> <input name="empresa" id="empresa" type="text" class="validate" required> <label for="empresa">* Empresa</label></div>
-                    <div class="input-field col s12 m6"> <input name="cargo" id="cargo" type="text" class="validate" required> <label for="cargo">* Cargo</label>                        </div>
+                    <div class="input-field col s12"> <input name="empresa" id="empresa" type="text" class="validate" required> <label for="empresa">* Empresa</label></div>
+                    <div class="input-field col s12"> <input name="cargo" id="cargo" type="text" class="validate" required> <label for="cargo">* Cargo</label>                        </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12"> <input name="codigo" id="codigo" type="text" class="validate" required> <label for="codigo">* Código</label></div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12 m4 push-m8"> <select name="estilo" class="icons" required>
+                    <div class="input-field col s4 push-s8"> <select name="estilo" class="icons" required>
                             <option value="" disabled selected>Selecciona un estilo</option>
                             <option value="mosaic" data-icon="images/styles/mosaic.jpg" class="left circle">Mosaico</option>
                             <option value="candy" data-icon="images/styles/candy.jpg" class="left circle">Candy</option>
                             <option value="udnie" data-icon="images/styles/udnie.jpg" class="left circle">Udnie</option>
                             <option value="starry-night" data-icon="images/styles/starry-night.jpg" class="left circle">Starry Night</option>
                         </select> <label>* Estilo</label> </div>
-                    <div class="file-field input-field col s12 m8 pull-m4">
+                    <div class="file-field input-field col s8 pull-s4">
                         <div class="btn"><i class="material-icons left">perm_media</i><span>Imagen</span> <input name="imagen" type="file"
                                 required> </div>
                         <div class="file-path-wrapper"> <input class="file-path" type="text"> </div>

@@ -34,9 +34,13 @@ def find_next_precess(sc):
             process = True
 
         #TODO: cambiar por procesada
-        #imagen = next_style['imagen']
-        imagen = open(path_styled, 'rb').read()
-        r = requests.post('http://pinta.bicubi.co/upload_style.php', data={'id': next_style['id'], 'name': next_style['name'] + '_' + next_style['estilo'] + next_style['ext'], 'imagen': imagen}, headers=headers)
+        #imagen = filename
+        imagen = path_styled
+        files = {'file': open(imagen, 'rb')}
+        r = requests.post('http://pinta.bicubi.co/upload_style.php',
+            files=files,
+            data={'id': next_style['id'], 'name': next_style['name'] + '_' + next_style['estilo'] + next_style['ext']},
+            headers=headers)
         #print(r.json())
 
         # borrar imagenes
