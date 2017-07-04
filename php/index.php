@@ -132,25 +132,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="row">
             <form id="form-file" class="col s12" action="./" method="post" enctype="multipart/form-data">
                 <div class="row">
-                    <div class="input-field col s12"> <input name="usuario" id="usuario" type="text" class="validate" required> <label for="usuario">* Nombre</label></div>
-                    <div class="input-field col s12"> <input name="correo" id="correo" type="email" class="validate" required> <label for="correo" data-error="Correo no válido">* Correo</label>                        </div>
+                    <div class="input-field col s12 m6"> <input name="usuario" id="usuario" type="text" class="validate" required> <label for="usuario">* Nombre</label></div>
+                    <div class="input-field col s12 m6"> <input name="correo" id="correo" type="email" class="validate" required> <label for="correo" data-error="Correo no válido">* Correo</label>                        </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12"> <input name="empresa" id="empresa" type="text" class="validate" required> <label for="empresa">* Empresa</label></div>
-                    <div class="input-field col s12"> <input name="cargo" id="cargo" type="text" class="validate" required> <label for="cargo">* Cargo</label>                        </div>
+                    <div class="input-field col s12 m6"> <input name="empresa" id="empresa" type="text" class="validate" required> <label for="empresa">* Empresa</label></div>
+                    <div class="input-field col s12 m6"> <input name="cargo" id="cargo" type="text" class="validate" required> <label for="cargo">* Cargo</label>                        </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12"> <input name="codigo" id="codigo" type="text" class="validate" required> <label for="codigo">* Código</label></div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s4 push-s8"> <select name="estilo" class="icons" required>
+                    <div class="input-field col s12 m4 push-m8"> <select name="estilo" class="icons" required>
                             <option value="" disabled selected>Selecciona un estilo</option>
                             <option value="mosaic" data-icon="images/styles/mosaic.jpg" class="left circle">Mosaico</option>
                             <option value="candy" data-icon="images/styles/candy.jpg" class="left circle">Candy</option>
                             <option value="udnie" data-icon="images/styles/udnie.jpg" class="left circle">Udnie</option>
                             <option value="starry-night" data-icon="images/styles/starry-night.jpg" class="left circle">Starry Night</option>
                         </select> <label>* Estilo</label> </div>
-                    <div class="file-field input-field col s8 pull-s4">
+                    <div class="file-field input-field col s12 m8 pull-m4">
                         <div class="btn"><i class="material-icons left">perm_media</i><span>Imagen</span> <input name="imagen" type="file"
                                 required> </div>
                         <div class="file-path-wrapper"> <input class="file-path" type="text"> </div>
