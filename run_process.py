@@ -1,5 +1,6 @@
-import db
-
+import base64
+import requests
+import urllib.request, json 
 import os
 import sched
 import time
@@ -7,35 +8,39 @@ s = sched.scheduler(time.time, time.sleep)
 
 
 def find_next_precess(sc):
-    next_style = db.get_next_process()
-    if next_style:
-        print('-----------------------------------')
-        db.update_style(next_style[0], 'PROCESANDO')
-        print(str(time.time()), 'procesar imagen', next_style[0])
-        print('-----------------------------------')
+    with urllib.request.urlopen("http://localhost/get_next_to_process.php") as url:
+        next_style = json.loads(url.read().decode())
+        if next_style and not next_style['error']:
+            print('-----------------------------------')
+            requests.get('http://localhost/set_status.php?status=PROCESANDO&id=' + next_style['id'])
+            print(str(time.time()), 'procesar imagen', next_style['name'])
+            print('-----------------------------------')
+            style = next_style['estilo']
+            filename = 'process/' + next_style['name'] + next_style['ext']
+            with open(filename, "wb") as fh:
+                fh.write(base64.b64decode(next_style['imagen']))
 
-        style = next_style[1]
-        filename = next_style[2]
+            path_styled = 'process/' + next_style['name'] + '_' + style + next_style['ext']
+            model = 'model/' + style + '.pth'
+            #print(model)
+            #os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --content-scale 5 --cuda 0')
+            #while not os.path.exists(path_styled):
+            #    process = True
 
-        path_styled = 'process/' + next_style[3] + '_' + style + next_style[4]
-        model = 'model/' + style + '.pth'
-        print(model)
-        os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --content-scale 5 --cuda 0')
-
-        while not os.path.exists(path_styled):
-            process = True
-
-        db.insert_style(next_style[0], path_styled)
-        # os.remove(filename)
-        os.remove(path_styled)
-        print('-----------------------------------')
-        db.update_style(next_style[0], 'PROCESADO')
-        print(str(time.time()), 'procesada imagen', next_style[0])
-        print('-----------------------------------')
-    else:
-        print(str(time.time()), 'no hay más por procesar')
-    # do your stuff
-    s.enter(20, 1, find_next_precess, (sc,))
+            #TODO: cambiar por procesada
+            url = 'http://localhost/upload_style.php'
+            r = requests.post(url, data={'id': next_style['id'], 'name': next_style['name'] + '_' + style + next_style['ext'], 'imagen': next_style['imagen']})
+            print(r.json())
+            #os.remove(filename)
+            #os.remove(path_styled)
+            print('-----------------------------------')
+            requests.get('http://localhost/set_status.php?status=PROCESADO&id=' + next_style['id'])
+            print(str(time.time()), 'procesada imagen', next_style['name'])
+            print('-----------------------------------')
+        else:
+            print(str(time.time()), 'no hay más por procesar')
+        # do your stuff
+        s.enter(10, 1, find_next_precess, (sc,))
 
 
 s.enter(1, 1, find_next_precess, (s,))
