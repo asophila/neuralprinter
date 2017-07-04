@@ -8,11 +8,11 @@ s = sched.scheduler(time.time, time.sleep)
 
 
 def find_next_precess(sc):
-    with urllib.request.urlopen("http://localhost/get_next_to_process.php") as url:
+    with urllib.request.urlopen("http://practiapinta.me/get_next_to_process.php") as url:
         next_style = json.loads(url.read().decode())
         if next_style and not next_style['error']:
             print('-----------------------------------')
-            requests.get('http://localhost/set_status.php?status=PROCESANDO&id=' + next_style['id'])
+            requests.get('http://practiapinta.me/set_status.php?status=PROCESANDO&id=' + next_style['id'])
             print(str(time.time()), 'procesar imagen', next_style['name'])
             print('-----------------------------------')
             style = next_style['estilo']
@@ -28,13 +28,13 @@ def find_next_precess(sc):
             #    process = True
 
             #TODO: cambiar por procesada
-            url = 'http://localhost/upload_style.php'
+            url = 'http://practiapinta.me/upload_style.php'
             r = requests.post(url, data={'id': next_style['id'], 'name': next_style['name'] + '_' + style + next_style['ext'], 'imagen': next_style['imagen']})
             print(r.json())
             #os.remove(filename)
             #os.remove(path_styled)
             print('-----------------------------------')
-            requests.get('http://localhost/set_status.php?status=PROCESADO&id=' + next_style['id'])
+            requests.get('http://practiapinta.me/set_status.php?status=PROCESADO&id=' + next_style['id'])
             print(str(time.time()), 'procesada imagen', next_style['name'])
             print('-----------------------------------')
         else:

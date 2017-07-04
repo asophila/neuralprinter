@@ -82,8 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn = get_conn();
             if ($conn->query($sql) === TRUE) {
                 $last_id = $conn->insert_id;
-                $sql = "UPDATE `code` SET `status` = 1, `image_id` = $last_id WHERE `key` = '$codigo'";
-                $conn->query($sql);
+                if($codigo != 'test' and $codigo != 'IDangs'){
+                    $sql = "UPDATE `code` SET `status` = 1, `image_id` = $last_id WHERE `key` = '$codigo'";
+                    $conn->query($sql);
+                }
                 $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\""; 
             } else {
                 $uploadMessage = "No se pudo guardar tu imagen";
@@ -194,5 +196,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
 
 </html>
-
-
