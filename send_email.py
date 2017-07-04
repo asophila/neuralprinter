@@ -59,4 +59,4 @@ def email(recipients, attachments):
         print("No se pudo enviar el correo.")
         raise
 
-email(['gsalazar@practia.global'], ['images/practia.jpg'])
+#email(['gsalazar@practia.global'], ['images/practia.jpg'])
