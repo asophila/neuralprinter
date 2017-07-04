@@ -28,7 +28,7 @@ def email(recipients, attachments):
     outer['To'] = COMMASPACE.join(recipients)
     outer['From'] = sender
     outer.preamble = ''
-    outer.attach(MIMEText('Hola\n'))
+    outer.attach(MIMEText('Gracias por asistir al stand de Practia en el evento América Digital 2017.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n'))
     # Add the attachments to the message
     for file in attachments:
         try:
@@ -59,3 +59,4 @@ def email(recipients, attachments):
         print("No se pudo enviar el correo.")
         raise
 
+email(['gsalazar@practia.global'], ['images/practia.jpg'])
