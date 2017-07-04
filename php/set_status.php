@@ -7,11 +7,15 @@ function update_status($image_id, $status){
     $conn->query($sql);
 
     $conn->close();
-    return null;
+    return true;
 }
 
 include 'db.php';
 
-update_status($_GET['id'], $_GET['status']);
-
+$result = update_status($_POST['id'], $_POST['status']);
+$response = array(
+            'error' => $result,
+            'message' => ''
+        );
+echo json_encode($response);
 ?>

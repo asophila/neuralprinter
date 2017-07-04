@@ -16,9 +16,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 COMMASPACE = ', '
-sender = ''
-password = ''
-smtp = ''
+sender = 'practiatepinta@practia.global'
+password = 'Practia1632'
+smtp = 'owa.pragmaconsultores.net'
 
 
 def email(recipients, attachments):
@@ -40,7 +40,7 @@ def email(recipients, attachments):
                            filename=os.path.basename(file))
             outer.attach(msg)
         except:
-            print("Unable to open one of the attachments.")
+            print("No se pudo abrir los adjuntos.")
             raise
 
     composed = outer.as_string()
@@ -54,8 +54,8 @@ def email(recipients, attachments):
             s.login(sender, password)
             s.sendmail(sender, recipients, composed)
             s.close()
-        print("Email sent!")
+        print("Correo enviado.")
     except:
-        print("Unable to send the email.")
+        print("No se pudo enviar el correo.")
         raise
 

@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    <base href="/">
+    <base href="./">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Practia te pinta | Practia</title>
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header>
         <div class="navbar-fixed">
             <nav>
-                <div class="nav-wrapper z-depth-1"> <a href="/" class="brand-logo left"><img src="images/logo.png" alt="Practia" class="responsive-img"></a>                    </div>
+                <div class="nav-wrapper z-depth-1"> <a href="./" class="brand-logo left"><img src="images/logo.png" alt="Practia" class="responsive-img"></a>                    </div>
                 <div class="progress-bar">
                     <div class="progress z-depth-1 hide">
                         <div class="indeterminate"></div>
@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
         <div class="row">
-            <form id="form-file" class="col s12" action="/" method="post" enctype="multipart/form-data">
+            <form id="form-file" class="col s12" action="./" method="post" enctype="multipart/form-data">
                 <div class="row">
                     <div class="input-field col s12 m6"> <input name="usuario" id="usuario" type="text" class="validate" required> <label for="usuario">* Nombre</label></div>
                     <div class="input-field col s12 m6"> <input name="correo" id="correo" type="email" class="validate" required> <label for="correo" data-error="Correo no válido">* Correo</label>                        </div>
