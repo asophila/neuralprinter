@@ -14,39 +14,41 @@ s = sched.scheduler(time.time, time.sleep)
 
 
 def find_next_print(sc):
-    with urllib.request.urlopen("http://practiapinta.me/get_next_to_print.php") as url:
-        next_print = json.loads(url.read().decode())
-        if next_print and not next_print['error']:
-            print('-----------------------------------')
-            r = requests.post('http://practiapinta.me/set_status.php', data={'id': next_print['id'], 'status': 'IMPRIMIENDO'})
-            print(str(time.time()), 'imprimiendo imagen', next_print['name'])
-            print('-----------------------------------')
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+    r = requests.get('http://pinta.bicubi.co/get_next_to_print.php', headers=headers)
 
-            # guardar imagen a imprimir
-            filename = 'print/' + next_print['name'] + next_print['ext']
-            with open(filename, "wb") as fh:
-                fh.write(base64.b64decode(next_print['imagen']))
+    next_print = r.json()
+    if next_print and not next_print['error']:
+        print('-----------------------------------')
+        r = requests.post('http://practiapinta.me/set_status.php', data={'id': next_print['id'], 'status': 'IMPRIMIENDO'})
+        print(str(time.time()), 'imprimiendo imagen', next_print['name'])
+        print('-----------------------------------')
 
-            # enviar por email
-            send.email([next_print['correo']], [filename])
+        # guardar imagen a imprimir
+        filename = 'print/' + next_print['name'] + next_print['ext']
+        with open(filename, "wb") as fh:
+            fh.write(base64.b64decode(next_print['imagen']))
 
-            # windows
-            printer.print_image(filename, print_image = True)
-            # linux
-            #printer.print_image(filename) 
+        # enviar por email
+        send.email([next_print['correo']], [filename])
 
-            # borrar imagenes
-            #os.remove(filename)
+        # windows
+        printer.print_image(filename, print_image = True)
+        # linux
+        #printer.print_image(filename) 
 
-            print('-----------------------------------')
-            r = requests.post('http://practiapinta.me/set_status.php', data={'id': next_print['id'], 'status': 'IMPRESO'})
-            print(str(time.time()), 'impresa imagen', next_print['name'])
-            print('-----------------------------------')
-        else:
-            print(str(time.time()), 'no hay más por imprimir')
+        # borrar imagenes
+        #os.remove(filename)
 
-        # do your stuff
-        s.enter(10, 1, find_next_print, (sc,))
+        print('-----------------------------------')
+        r = requests.post('http://practiapinta.me/set_status.php', data={'id': next_print['id'], 'status': 'IMPRESO'})
+        print(str(time.time()), 'impresa imagen', next_print['name'])
+        print('-----------------------------------')
+    else:
+        print(str(time.time()), 'no hay más por imprimir')
+
+    # do your stuff
+    s.enter(10, 1, find_next_print, (sc,))
 
 
 s = sched.scheduler(time.time, time.sleep)
