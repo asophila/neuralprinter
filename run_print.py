@@ -20,7 +20,7 @@ def find_next_print(sc):
     next_print = r.json()
     if next_print and not next_print['error']:
         print('-----------------------------------')
-        r = requests.post('http://practiapinta.me/set_status.php', data={'id': next_print['id'], 'status': 'IMPRIMIENDO'})
+        r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_print['id'], 'status': 'IMPRIMIENDO'}, headers=headers)
         print(str(time.time()), 'imprimiendo imagen', next_print['name'])
         print('-----------------------------------')
 
@@ -41,7 +41,7 @@ def find_next_print(sc):
         #os.remove(filename)
 
         print('-----------------------------------')
-        r = requests.post('http://practiapinta.me/set_status.php', data={'id': next_print['id'], 'status': 'IMPRESO'})
+        r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_print['id'], 'status': 'IMPRESO'}, headers=headers)
         print(str(time.time()), 'impresa imagen', next_print['name'])
         print('-----------------------------------')
     else:

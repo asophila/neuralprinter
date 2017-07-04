@@ -14,7 +14,7 @@ def find_next_precess(sc):
     next_style = r.json()
     if next_style and not next_style['error']:
         print('-----------------------------------')
-        r = requests.post('http://practiapinta.me/set_status.php', data={'id': next_style['id'], 'status': 'PROCESANDO'})
+        r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_style['id'], 'status': 'PROCESANDO'}, headers=headers)
         print(str(time.time()), 'procesando imagen', next_style['name'])
         print('-----------------------------------')
 
@@ -34,10 +34,9 @@ def find_next_precess(sc):
             process = True
 
         #TODO: cambiar por procesada
-        url = 'http://practiapinta.me/upload_style.php'
         #imagen = next_style['imagen']
         imagen = open(path_styled, 'rb').read()
-        r = requests.post(url, data={'id': next_style['id'], 'name': next_style['name'] + '_' + next_style['estilo'] + next_style['ext'], 'imagen': imagen})
+        r = requests.post('http://pinta.bicubi.co/upload_style.php', data={'id': next_style['id'], 'name': next_style['name'] + '_' + next_style['estilo'] + next_style['ext'], 'imagen': imagen}, headers=headers)
         #print(r.json())
 
         # borrar imagenes
@@ -45,7 +44,7 @@ def find_next_precess(sc):
         #os.remove(path_styled)
 
         print('-----------------------------------')
-        r = requests.post('http://practiapinta.me/set_status.php', data={'id': next_style['id'], 'status': 'PROCESADO'})
+        r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_style['id'], 'status': 'PROCESADO'}, headers=headers)
         print(str(time.time()), 'procesada imagen', next_style['name'])
         print('-----------------------------------')
     else:
