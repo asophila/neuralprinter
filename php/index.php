@@ -1,3 +1,9 @@
+<?php 
+
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -21,8 +27,6 @@
 
 include 'db.php';
 include 'codes.php';
-
-session_start();
 
 $uploadMessage = '';
 $uploadOk = 1;
@@ -73,7 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //}
             // Allow certain file formats
             //else
-            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" &&
+                $imageFileType != "JPG" && $imageFileType != "PNG" && $imageFileType != "JPEG") {
                 $uploadMessage = "Sube una imagen JPG, JPEG o PNG.";
                 $uploadOk = 0;
             }
