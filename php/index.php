@@ -22,6 +22,8 @@
 include 'db.php';
 include 'codes.php';
 
+session_start();
+
 $uploadMessage = '';
 $uploadOk = 1;
 $showMessage = false;
@@ -29,72 +31,81 @@ $showMessage = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $showMessage = true;
 
-    $usuario = $_POST["usuario"];
-    $correo = $_POST["correo"];
-    $empresa = $_POST["empresa"];
-    $cargo = $_POST["cargo"];
-    $codigo = $_POST["codigo"];
-    $estilo = $_POST["estilo"];
-
-
-    #validar codigo
-    $code_valid = json_decode(valid_code($codigo), true);
-    if(!$code_valid['valid']){
-        $uploadMessage = $code_valid['message'];
+    if(isset($_POST['uniqid']) AND isset($_SESSION['uniqid']) AND $_POST['uniqid'] == $_SESSION['uniqid']){
+        // can't submit again
+        $uploadMessage = 'Tu imagen ya ha sido enviada, completa el formulario nuevamente.';
         $uploadOk = 0;
         $codigo = '';
-    } else {
-        $target_dir = "uploads/";
-        $target_file = $target_dir . basename($_FILES["imagen"]["name"]);
-        $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+    }
+    else{
+        $_SESSION['uniqid'] = $_POST['uniqid'];
 
-        // Check if file already exists
-        /*
-        if (file_exists($target_file)) {
-            $uploadMessage =  "Sorry, file already exists.";
-            $uploadOk = 0;
-        }
-        // Check file size
-        else */
-        //if ($_FILES["imagen"]["size"] > 700000) {
-        //    $uploadMessage = "La imagen es muy grande, intenta subir otra.";
-        //   $uploadOk = 0;
-        //}
-        // Allow certain file formats
-        //else
-        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
-            $uploadMessage = "Sube una imagen JPG, JPEG o PNG.";
-            $uploadOk = 0;
-        }
-        // if everything is ok, try to upload file
-        else {
-            if (move_uploaded_file($_FILES["imagen"]["tmp_name"], $target_file)) {
-                $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\"";    
+        $usuario = $_POST["usuario"];
+        $correo = $_POST["correo"];
+        $empresa = $_POST["empresa"];
+        $cargo = $_POST["cargo"];
+        $codigo = $_POST["codigo"];
+        $estilo = $_POST["estilo"];
 
-                //guardar imagen en BD
-                $image = addslashes(file_get_contents($target_file)); //SQL Injection defence!
-                $name = pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_FILENAME);
-                $ext = '.' . pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_EXTENSION);
-                $sql = "INSERT INTO `image` (`usuario`, `ip`, `correo`, `empresa`, `cargo`, `estilo`, `name`, `ext`, `imagen`, `status`)
-                                    VALUES ('$usuario', '', '$correo', '$empresa', '$cargo', '$estilo', '$name', '$ext', '$image', 'A_PROCESAR')";
-                $conn = get_conn();
-                if ($conn->query($sql) === TRUE) {
-                    $last_id = $conn->insert_id;
-                    if($codigo != 'test' and $codigo != 'IDangs'){
-                        $sql = "UPDATE `code` SET `status` = 1, `image_id` = $last_id WHERE `key` = '$codigo'";
-                        $conn->query($sql);
+
+        #validar codigo
+        $code_valid = json_decode(valid_code($codigo), true);
+        if(!$code_valid['valid']){
+            $uploadMessage = $code_valid['message'];
+            $uploadOk = 0;
+            $codigo = '';
+        } else {
+            $target_dir = "uploads/";
+            $target_file = $target_dir . basename($_FILES["imagen"]["name"]);
+            $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+
+            // Check if file already exists
+            /*
+            if (file_exists($target_file)) {
+                $uploadMessage =  "Sorry, file already exists.";
+                $uploadOk = 0;
+            }
+            // Check file size
+            else */
+            //if ($_FILES["imagen"]["size"] > 700000) {
+            //    $uploadMessage = "La imagen es muy grande, intenta subir otra.";
+            //   $uploadOk = 0;
+            //}
+            // Allow certain file formats
+            //else
+            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+                $uploadMessage = "Sube una imagen JPG, JPEG o PNG.";
+                $uploadOk = 0;
+            }
+            // if everything is ok, try to upload file
+            else {
+                if (move_uploaded_file($_FILES["imagen"]["tmp_name"], $target_file)) {
+                    $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\"";    
+
+                    //guardar imagen en BD
+                    $image = addslashes(file_get_contents($target_file)); //SQL Injection defence!
+                    $name = pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_FILENAME);
+                    $ext = '.' . pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_EXTENSION);
+                    $sql = "INSERT INTO `image` (`usuario`, `ip`, `correo`, `empresa`, `cargo`, `estilo`, `name`, `ext`, `imagen`, `status`)
+                                        VALUES ('$usuario', '', '$correo', '$empresa', '$cargo', '$estilo', '$name', '$ext', '$image', 'A_PROCESAR')";
+                    $conn = get_conn();
+                    if ($conn->query($sql) === TRUE) {
+                        $last_id = $conn->insert_id;
+                        if($codigo != 'test' and $codigo != 'IDangs'){
+                            $sql = "UPDATE `code` SET `status` = 1, `image_id` = $last_id WHERE `key` = '$codigo'";
+                            $conn->query($sql);
+                        }
+                        $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\""; 
+                    } else {
+                        $uploadMessage = "No se pudo guardar tu imagen";
+                        $uploadOk = 0;
                     }
-                    $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\""; 
+                    $conn->close();
                 } else {
                     $uploadMessage = "No se pudo guardar tu imagen";
                     $uploadOk = 0;
                 }
-                $conn->close();
-            } else {
-                $uploadMessage = "No se pudo guardar tu imagen";
-                $uploadOk = 0;
-            }
-            
+            }   
         }
     }
 }
@@ -156,6 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="file-path-wrapper"> <input class="file-path" type="text"> </div>
                     </div>
                 </div>
+                <input type="hidden" name="uniqid" value="<?php echo uniqid();?>" />
                 <div class="row center-align"> <button class="btn waves-effect waves-light btn-large" type="submit" name="action">Enviar<i class="material-icons right">send</i></button>                    </div>
             </form>
         </div>
