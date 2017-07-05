@@ -9,10 +9,20 @@ function get_next_to_print(){
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
 
+        $sql_code = "SELECT * FROM `code` WHERE `image_id` = " . $row['id'];
+        $result_code = $conn->query($sql_code);
+        if ($result_code->num_rows > 0) {
+            $code = $result_code->fetch_assoc();
+            $code = $code['key'];
+        } else {
+            $code = '';
+        }
+
         $response = array(
             'error' => false,
             'message' => '',
             'id' => $row['id'],
+            'codigo' => $code,
             'correo' => $row['correo'],
             'name' => $row['name'] . '_'. $row['estilo'],
             'ext' => $row['ext'],

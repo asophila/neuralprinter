@@ -33,7 +33,9 @@ def find_next_print(sc):
         send.email([next_print['correo']], [filename])
 
         # windows
-        printer.print_image(filename, print_image = True)
+        codigo = next_print['codigo']
+        imprimir = True if codigo else False
+        printer.print_image(filename, print_image = imprimir)
         # linux
         #printer.print_image(filename) 
 
