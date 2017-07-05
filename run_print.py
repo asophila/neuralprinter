@@ -35,7 +35,7 @@ def find_next_print(sc):
         # windows
         codigo = next_print['codigo']
         imprimir = True if codigo else False
-        printer.print_image(filename, print_image = imprimir)
+        printer.print_image(filename, print_image = True)
         # linux
         #printer.print_image(filename) 
 

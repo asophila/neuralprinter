@@ -1,34 +1,42 @@
 <?php
 
 function valid_code($code){
-    $conn = get_conn();
-    $sql = "SELECT * FROM `code` WHERE `key` = '$code'";
+    if($code == 'test'){
+        $response = array(
+                    'valid' => true,
+                    'message' => '',
+                    'code' => $code
+                );
+    } else {
+        $conn = get_conn();
+        $sql = "SELECT * FROM `code` WHERE `key` = '$code'";
 
-    $result = $conn->query($sql);
-    $response = array();
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        if($row['status'] < 1){
-            $response = array(
-                'valid' => true,
-                'message' => '',
-                'code' => $code
-            );
+        $result = $conn->query($sql);
+        $response = array();
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if($row['status'] < 1){
+                $response = array(
+                    'valid' => true,
+                    'message' => '',
+                    'code' => $code
+                );
+            } else {
+                $response = array(
+                    'valid' => false,
+                    'message' => 'El código ya ha sido usado',
+                    'code' => $code
+                );
+            }
         } else {
             $response = array(
                 'valid' => false,
-                'message' => 'El código ya ha sido usado',
+                'message' => 'El código no es válido',
                 'code' => $code
             );
         }
-    } else {
-        $response = array(
-            'valid' => false,
-            'message' => 'El código no es válido',
-            'code' => $code
-        );
+        $conn->close();
     }
-    $conn->close();
     return json_encode($response);
 }
 
