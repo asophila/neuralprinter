@@ -31,15 +31,22 @@ include 'codes.php';
 $uploadMessage = '';
 $uploadOk = 1;
 $showMessage = false;
+$show_link_image = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $showMessage = true;
 
     if(isset($_POST['uniqid']) AND isset($_SESSION['uniqid']) AND $_POST['uniqid'] == $_SESSION['uniqid']){
         // can't submit again
-        $uploadMessage = 'Tu imagen ya ha sido enviada, completa el formulario nuevamente.';
+        $uploadMessage = 'Completa el formulario nuevamente.';
         $uploadOk = 0;
         $codigo = '';
+        $show_link_image = isset($_SESSION['show_link']);
+
+        $usuario = $_POST["usuario"];
+        $correo = $_POST["correo"];
+        $empresa = $_POST["empresa"];
+        $cargo = $_POST["cargo"];
     }
     else{
         $_SESSION['uniqid'] = $_POST['uniqid'];
@@ -51,13 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $codigo = $_POST["codigo"];
         $estilo = $_POST["estilo"];
 
-
         #validar codigo
         $code_valid = json_decode(valid_code($codigo), true);
         if(!$code_valid['valid']){
             $uploadMessage = $code_valid['message'];
             $uploadOk = 0;
             $codigo = '';
+            $show_link_image = true;
+            $_SESSION['show_link'] = true;
         } else {
             $target_dir = "uploads/";
             $target_file = $target_dir . basename($_FILES["imagen"]["name"]);
@@ -101,6 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $conn->query($sql);
                         }
                         $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\""; 
+                        $show_link_image = true;
+                        $_SESSION['show_link'] = true;
+                        $codigo = '';
                     } else {
                         $uploadMessage = "No se pudo guardar tu imagen";
                         $uploadOk = 0;
@@ -136,6 +147,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h5<?php if($uploadOk){ echo ''; } else { echo ' class="error"'; } ?>><?php echo $uploadMessage; ?></h5>
             </div>
         </div>
+        <?php if($show_link_image) { ?>
+        <div class="row center-align"> <a href="./imagenes.php?correo=<?php echo $_POST['correo']; ?>" target="_blank" class="waves-effect waves-light btn"><i class="material-icons left">photo_library</i>Ver mis imagenes</a> </div>
+        <?php } ?>
         <div class="row xs-pl-20 xs-pr-20">
             <div class="col s12">
                 <h5>¿Qué son las REDES NEURONALES?</h5>
@@ -167,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <option value="starry-night" data-icon="images/styles/starry-night.jpg" class="left circle">Starry Night</option>
                         </select> <label>* Estilo</label> </div>
                     <div class="file-field input-field col s12 m8 pull-m4">
-                        <div class="btn"><i class="material-icons left">perm_media</i><span>Imagen</span> <input name="imagen" type="file"
+                        <div class="btn"><i class="material-icons left">photo</i><span>Imagen</span> <input name="imagen" type="file"
                                 required> </div>
                         <div class="file-path-wrapper"> <input class="file-path" type="text"> </div>
                     </div>
@@ -186,7 +200,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script>
         $(document).ready(function () {
         <?php
-            if(!$uploadOk){
                 if (isset($usuario)) {
                     echo "$('#usuario').val('" . $usuario ."');";
                 }
@@ -203,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo "$('#codigo').val('" . $codigo ."');";
                 }
                 echo 'Materialize.updateTextFields();';
-            }
+            
         ?>
         $('select').material_select();
 

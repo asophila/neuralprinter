@@ -17,38 +17,41 @@ def find_next_print(sc):
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     r = requests.get('http://pinta.bicubi.co/get_next_to_print.php', headers=headers)
 
-    next_print = r.json()
-    if next_print and not next_print['error']:
-        print('-----------------------------------')
-        r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_print['id'], 'status': 'IMPRIMIENDO'}, headers=headers)
-        print(str(time.time()), 'imprimiendo imagen', next_print['name'])
-        print('-----------------------------------')
+    if r.status_code == 200:
+        next_print = r.json()
+        if next_print and not next_print['error']:
+            print('-----------------------------------')
+            r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_print['id'], 'status': 'IMPRIMIENDO'}, headers=headers)
+            print(str(time.time()), 'imprimiendo imagen', next_print['name'])
+            print('-----------------------------------')
 
-        # guardar imagen a imprimir
-        filename = 'print/' + next_print['name'] + next_print['ext']
-        with open(filename, "wb") as fh:
-            fh.write(base64.b64decode(next_print['imagen']))
+            # guardar imagen a imprimir
+            filename = 'print/' + next_print['name'] + next_print['ext']
+            with open(filename, "wb") as fh:
+                fh.write(base64.b64decode(next_print['imagen']))
 
-        # enviar por email
-        send.email([next_print['correo']], [filename])
+            # enviar por email
+            send.email([next_print['correo']], [filename])
 
-        # windows
-        codigo = next_print['codigo']
-        imprimir = True if codigo else False
-        printer.print_image(filename, print_image = True)
-        # linux
-        #printer.print_image(filename) 
+            # windows
+            codigo = next_print['codigo']
+            imprimir = True if codigo else False
+            printer.print_image(filename, print_image = True)
+            # linux
+            #printer.print_image(filename) 
 
-        # borrar imagenes
-        #os.remove(filename)
+            # borrar imagenes
+            #os.remove(filename)
 
-        print('-----------------------------------')
-        r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_print['id'], 'status': 'IMPRESO'}, headers=headers)
-        print(str(time.time()), 'impresa imagen', next_print['name'])
-        print('-----------------------------------')
+            print('-----------------------------------')
+            r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_print['id'], 'status': 'IMPRESO'}, headers=headers)
+            print(str(time.time()), 'impresa imagen', next_print['name'])
+            print('-----------------------------------')
+        else:
+            print(str(time.time()), 'no hay más por imprimir')
+
     else:
-        print(str(time.time()), 'no hay más por imprimir')
-
+        print(str(time.time()), 'Error al recibir respuesta desde el servidor')
     # do your stuff
     s.enter(10, 1, find_next_print, (sc,))
 
