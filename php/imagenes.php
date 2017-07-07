@@ -46,6 +46,13 @@
 </head>
 
 <body>
+    <!-- Start Page Loading -->
+    <div id="loader-wrapper">
+        <div id="loader"></div>        
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+    </div>
+    <!-- End Page Loading -->
             <?php
                 include 'db.php';
 
@@ -157,6 +164,16 @@
     <script>
         $(document).ready(function(){
             $('.slider').slider();
+
+            setTimeout(function() {
+                $("body").addClass("loaded");
+            }, 200);
+        });
+
+        $( "#form-file" ).submit(function( event ) {
+            setTimeout(function() {
+                $("body").removeClass("loaded");
+            }, 200);
         });
     </script>
     <!-- endinject -->

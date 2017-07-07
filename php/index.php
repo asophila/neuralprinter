@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $correo = $_POST["correo"];
         $empresa = $_POST["empresa"];
         $cargo = $_POST["cargo"];
-        $codigo = $_POST["codigo"];
+        $codigo = strtolower($_POST["codigo"]);
         $estilo = $_POST["estilo"];
 
         #validar codigo
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $target_dir = "uploads/";
             $target_file = $target_dir . basename($_FILES["imagen"]["name"]);
-            $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+            $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
             // Check if file already exists
             /*
@@ -85,8 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //}
             // Allow certain file formats
             //else
-            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" &&
-                $imageFileType != "JPG" && $imageFileType != "PNG" && $imageFileType != "JPEG") {
+            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
                 $uploadMessage = "Sube una imagen JPG, JPEG o PNG.";
                 $uploadOk = 0;
             }
@@ -98,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     //guardar imagen en BD
                     $image = addslashes(file_get_contents($target_file)); //SQL Injection defence!
                     $name = pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_FILENAME);
-                    $ext = '.' . pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_EXTENSION);
+                    $ext = '.' . $imageFileType; //pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_EXTENSION);
                     $sql = "INSERT INTO `image` (`usuario`, `ip`, `correo`, `empresa`, `cargo`, `estilo`, `name`, `ext`, `imagen`, `status`)
                                         VALUES ('$usuario', '', '$correo', '$empresa', '$cargo', '$estilo', '$name', '$ext', '$image', 'A_PROCESAR')";
                     $conn = get_conn();
