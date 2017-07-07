@@ -6,7 +6,7 @@ import win32ui
 from PIL import Image, ImageWin
 
 
-def print_image(file_name, print_image=False):
+def print_image(file_name, print_image = False):
     #
     # Constants for GetDeviceCaps
     #

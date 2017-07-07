@@ -16,19 +16,24 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 COMMASPACE = ', '
-sender = 'practiatepinta@practia.global'
-password = 'Practia1632'
-smtp = 'owa.pragmaconsultores.net'
+sender = ''
+password = ''
+smtp = ''
 
 
-def email(recipients, attachments):
+def email(recipients, attachments, body):
+    
+    if not(sender and password and smtp):
+        print("Configurar cuenta de correo")
+        return
+
     # Create the enclosing (outer) message
     outer = MIMEMultipart()
     outer['Subject'] = 'Practia te pinta'
     outer['To'] = COMMASPACE.join(recipients)
     outer['From'] = sender
     outer.preamble = ''
-    outer.attach(MIMEText('Gracias por asistir al stand de Practia en el evento América Digital 2017.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n'))
+    outer.attach(MIMEText(body))
     # Add the attachments to the message
     for file in attachments:
         try:
@@ -58,5 +63,3 @@ def email(recipients, attachments):
     except:
         print("No se pudo enviar el correo.")
         raise
-
-#email(['gsalazar@practia.global'], ['images/practia.jpg'])

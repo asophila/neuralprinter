@@ -1,11 +1,11 @@
 <?php
 
 function valid_code($code){
-    if($code == 'test'){
+    if(empty($code)){
         $response = array(
                     'valid' => true,
                     'message' => '',
-                    'code' => $code
+                    'code' => ''
                 );
     } else {
         $conn = get_conn();

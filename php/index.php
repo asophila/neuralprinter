@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $uploadMessage = 'Completa el formulario nuevamente.';
         $uploadOk = 0;
         $codigo = '';
-        $show_link_image = isset($_SESSION['show_link']);
+        //$show_link_image = isset($_SESSION['show_link']);
 
         $usuario = $_POST["usuario"];
         $correo = $_POST["correo"];
@@ -64,27 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $uploadMessage = $code_valid['message'];
             $uploadOk = 0;
             $codigo = '';
-            $show_link_image = true;
+            //$show_link_image = true;
             $_SESSION['show_link'] = true;
         } else {
             $target_dir = "uploads/";
             $target_file = $target_dir . basename($_FILES["imagen"]["name"]);
             $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
-            // Check if file already exists
-            /*
-            if (file_exists($target_file)) {
-                $uploadMessage =  "Sorry, file already exists.";
-                $uploadOk = 0;
-            }
-            // Check file size
-            else */
-            //if ($_FILES["imagen"]["size"] > 700000) {
-            //    $uploadMessage = "La imagen es muy grande, intenta subir otra.";
-            //   $uploadOk = 0;
-            //}
-            // Allow certain file formats
-            //else
+
             if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
                 $uploadMessage = "Sube una imagen JPG, JPEG o PNG.";
                 $uploadOk = 0;
@@ -103,12 +90,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $conn = get_conn();
                     if ($conn->query($sql) === TRUE) {
                         $last_id = $conn->insert_id;
-                        if($codigo != 'test' and $codigo != 'IDangs'){
+                        if(!empty($codigo)){
                             $sql = "UPDATE `code` SET `status` = 1, `image_id` = $last_id WHERE `key` = '$codigo'";
                             $conn->query($sql);
                         }
                         $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\""; 
-                        $show_link_image = true;
+                        //$show_link_image = true;
                         $_SESSION['show_link'] = true;
                         $codigo = '';
                     } else {
@@ -169,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="input-field col s12 m6"> <input name="cargo" id="cargo" type="text" class="validate" required> <label for="cargo">* Cargo</label>                        </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12"> <input name="codigo" id="codigo" type="text" class="validate" required> <label for="codigo">* Código</label></div>
+                    <div class="input-field col s12"> <input name="codigo" id="codigo" type="text" class="validate"> <label for="codigo">Código</label></div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12 m4 push-m8"> <select name="estilo" class="icons" required>

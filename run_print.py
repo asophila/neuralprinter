@@ -1,17 +1,26 @@
 import base64
-import json
 import os
 import requests
 import sched
 import time
-import urllib.request
 
-import send_email as send
-import print_windows as printer
-#import print_linux as printer
+import send_email as sender
+
+####################################################
+# completar estos campos de acuerdo al ambiente y evento
+save_images = True
+print_os = 'Windows'
+body = 'Gracias por asistir al stand de Practia en el evento América Digital 2017.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n'
+####################################################
+
+if print_os == 'Windows':
+    print('imprimir Windows')
+    import print_windows as printer
+else:
+    print('imprimir Linux')
+    import print_linux as printer
 
 s = sched.scheduler(time.time, time.sleep)
-
 
 def find_next_print(sc):
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
@@ -26,22 +35,21 @@ def find_next_print(sc):
             print('-----------------------------------')
 
             # guardar imagen a imprimir
-            filename = 'print/' + next_print['name'] + next_print['ext']
+            filename = 'print/' + str(time.time()) + '_' + next_print['name'] + next_print['ext']
             with open(filename, "wb") as fh:
                 fh.write(base64.b64decode(next_print['imagen']))
 
             # enviar por email
-            send.email([next_print['correo']], [filename])
+            sender.email([next_print['correo']], [filename], body)
 
             # windows
             codigo = next_print['codigo']
             imprimir = True if codigo else False
-            printer.print_image(filename, print_image = True)
-            # linux
-            #printer.print_image(filename) 
+            printer.print_image(filename, print_image = imprimir)
 
             # borrar imagenes
-            #os.remove(filename)
+            if not save_images:
+                os.remove(filename)
 
             print('-----------------------------------')
             r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_print['id'], 'status': 'IMPRESO'}, headers=headers)
