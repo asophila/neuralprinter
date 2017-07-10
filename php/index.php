@@ -106,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //$show_link_image = true;
             $_SESSION['show_link'] = true;
         } else {
+            $codigo = $code_valid['code'];
             $target_dir = "uploads/";
             $target_file = $target_dir . basename($_FILES["imagen"]["name"]);
             $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));

@@ -10,7 +10,6 @@ import send_email as sender
 # completar estos campos de acuerdo al ambiente y evento
 save_images = True
 print_os = 'Windows'
-body = 'Gracias por asistir al stand de Practia en el evento América Digital 2017.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n'
 evento = ''
 ####################################################
 
