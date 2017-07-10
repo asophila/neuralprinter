@@ -1,8 +1,16 @@
 <?php
 
 function get_next_to_print(){
+    if(!isset($_GET['evento']) || strlen($_GET['evento']) != 2){
+        $response = array(
+            'error' => true,
+            'message' => 'Debe indicar un evento válido'
+        );
+        return json_encode($response);
+    }
+
     $conn = get_conn();
-    $sql = "SELECT * FROM `image` WHERE `status` = 'PROCESADO' ORDER BY `id` ASC";
+    $sql = "SELECT * FROM `image` WHERE `status` = 'PROCESADO' and `ip` = '" . $_GET['evento'] ."' ORDER BY `id` ASC";
 
     $result = $conn->query($sql);
     $response = array();

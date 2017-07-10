@@ -2,6 +2,40 @@
 
 session_start();
 
+if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) ob_start("ob_gzhandler"); else ob_start();
+
+function getUserIP()
+{
+    $client  = @$_SERVER['HTTP_CLIENT_IP'];
+    $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+    $remote  = $_SERVER['REMOTE_ADDR'];
+
+    if(filter_var($client, FILTER_VALIDATE_IP))
+    {
+        $ip = $client;
+    }
+    elseif(filter_var($forward, FILTER_VALIDATE_IP))
+    {
+        $ip = $forward;
+    }
+    else
+    {
+        $ip = $remote;
+    }
+
+    return $ip;
+}
+
+
+$user_ip = getUserIP();
+if(strlen($user_ip) > 5){
+    $geo = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$user_ip));
+    if($geo['geoplugin_status'] == 200){
+        $_SESSION['evento'] = $geo['geoplugin_countryCode'];
+    }
+} else {
+    $_SESSION['evento'] = '';
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,8 +51,8 @@ session_start();
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
     <!-- inject:css -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
-    <link href="css/less-space.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+    <link href="css/less-space.min.css" rel="stylesheet" type="text/css">
     <link type="text/css" rel="stylesheet" href="css/practia.css" media="screen,projection" />
     <!-- endinject -->
 </head>
@@ -57,6 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cargo = $_POST["cargo"];
         $codigo = strtolower($_POST["codigo"]);
         $estilo = $_POST["estilo"];
+        if(isset($_SESSION['evento']) && strlen($_SESSION['evento']) > 0){
+            $evento = $_SESSION["evento"];
+        } else {
+            $evento = $_POST["evento"];
+        }
 
         #validar codigo
         $code_valid = json_decode(valid_code($codigo), true);
@@ -86,7 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $name = pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_FILENAME);
                     $ext = '.' . $imageFileType; //pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_EXTENSION);
                     $sql = "INSERT INTO `image` (`usuario`, `ip`, `correo`, `empresa`, `cargo`, `estilo`, `name`, `ext`, `imagen`, `status`)
-                                        VALUES ('$usuario', '', '$correo', '$empresa', '$cargo', '$estilo', '$name', '$ext', '$image', 'A_PROCESAR')";
+                                        VALUES ('$usuario', '$evento', '$correo', '$empresa', '$cargo', '$estilo', '$name', '$ext', '$image', 'A_PROCESAR')";
+                    
                     $conn = get_conn();
                     if ($conn->query($sql) === TRUE) {
                         $last_id = $conn->insert_id;
@@ -99,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $_SESSION['show_link'] = true;
                         $codigo = '';
                     } else {
-                        $uploadMessage = "No se pudo guardar tu imagen";
+                        $uploadMessage = "No se pudo guardar tu imagen!";
                         $uploadOk = 0;
                     }
                     $conn->close();
@@ -155,9 +195,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="input-field col s12 m6"> <input name="empresa" id="empresa" type="text" class="validate" required> <label for="empresa">* Empresa</label></div>
                     <div class="input-field col s12 m6"> <input name="cargo" id="cargo" type="text" class="validate" required> <label for="cargo">* Cargo</label>                        </div>
                 </div>
-                <div class="row">
-                    <div class="input-field col s12"> <input name="codigo" id="codigo" type="text" class="validate"> <label for="codigo">Código</label></div>
+                <div class="row valign-wrapper">
+                    <div class="col s1 m1">
+                        <a class="tooltipped" data-position="right" data-delay="50" data-tooltip="Consigue e ingresa un código para imprimir tu foto con estilo">
+                        <i class="material-icons prefix">info_outline</i></a>
+                    </div>
+                    <div class="input-field col s10 m11">                        
+                        <input name="codigo" id="codigo" type="text" class="validate">
+                        <label for="codigo">Código</label>
+                    </div>
                 </div>
+                <?php if(!isset($_SESSION['evento']) | strlen($_SESSION['evento']) < 1) { ?>
+                <div class="row">                
+                    <div class="input-field col s12">
+                        <select name="evento" required>
+                            <option value="" disabled selected>Selecciona un evento</option>
+                            <option value="AR">Argentina</option>
+                            <option value="CL">Chile</option>
+                            <option value="PE">Perú</option>
+                        </select> <label>* Evento</label>
+                    </div>
+                </div>
+                <?php } ?>
                 <div class="row">
                     <div class="input-field col s12 m4 push-m8"> <select name="estilo" class="icons" required>
                             <option value="" disabled selected>Selecciona un estilo</option>
@@ -180,8 +239,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <footer> </footer>
     <div class="overlay fixed hide"></div>
     <!-- inject:css -->
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
     <script type="text/javascript" src="js/practia.js"></script>
     <script>
         $(document).ready(function () {

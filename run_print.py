@@ -11,6 +11,7 @@ import send_email as sender
 save_images = True
 print_os = 'Windows'
 body = 'Gracias por asistir al stand de Practia en el evento América Digital 2017.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n'
+evento = ''
 ####################################################
 
 if print_os == 'Windows':
@@ -23,8 +24,10 @@ else:
 s = sched.scheduler(time.time, time.sleep)
 
 def find_next_print(sc):
+    continuar = True
+
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-    r = requests.get('http://pinta.bicubi.co/get_next_to_print.php', headers=headers)
+    r = requests.get('http://pinta.bicubi.co/get_next_to_print.php?evento=' + evento, headers=headers)
 
     if r.status_code == 200:
         next_print = r.json()
@@ -56,7 +59,9 @@ def find_next_print(sc):
             print(str(time.time()), 'impresa imagen', next_print['name'])
             print('-----------------------------------')
         else:
-            print(str(time.time()), 'no hay más por imprimir')
+            print(str(time.time()), next_print['message'])
+            if 'evento' in next_print['message']:
+                continuar = False
 
     else:
         print(str(time.time()), 'Error al recibir respuesta desde el servidor')

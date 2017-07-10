@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 *.bak
 *.db
+run_*_local.py
