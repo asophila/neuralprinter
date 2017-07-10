@@ -29,9 +29,9 @@ function getUserIP()
 
 $user_ip = getUserIP();
 if(strlen($user_ip) > 5){
-    $geo = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$user_ip));
-    if($geo['geoplugin_status'] == 200){
-        $_SESSION['evento'] = $geo['geoplugin_countryCode'];
+    $geo = json_decode(file_get_contents('http://www.geoplugin.net/json.gp?ip='.$user_ip));
+    if($geo->geoplugin_status == 200){
+        $_SESSION['evento'] = $geo->geoplugin_countryCode;
     }
 } else {
     $_SESSION['evento'] = '';

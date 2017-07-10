@@ -22,7 +22,7 @@ function getUserIP()
     return $ip;
 }
 
-function get_next_to_print($ev){
+function get_next_to_print($ev, $correo){
     $evento = $ev;
     if(strlen($evento) != 2 || (isset($_GET['evento']) && strlen($_GET['evento']) == 2)){
         $evento = $_GET['evento'];
@@ -62,7 +62,8 @@ function get_next_to_print($ev){
             'name' => $row['name'] . '_'. $row['estilo'],
             'ext' => $row['ext'],
             'imagen' => base64_encode( $row['imagen_style'] ),
-            'evento' => $evento
+            'evento' => $evento,
+            'body_correo' => $correo
         );
     } else {
         $response = array(
@@ -75,18 +76,34 @@ function get_next_to_print($ev){
     return json_encode($response);
 }
 
+function get_correo($evento){
+    if($evento == 'CL'){
+        return 'Gracias por asistir al stand de Practia en el evento Chile.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n';
+    }
+    if($evento == 'AR'){
+        return 'Gracias por asistir al stand de Practia en el evento Argentina.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n';
+    }
+    if($evento == 'PE'){
+        return 'Gracias por asistir al stand de Practia en el evento Perú.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n';
+    }
+    return 'Gracias por asistir al stand de Practia.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n';
+}
+
 header("Content-Type: application/json; charset=utf-8");
 include 'db.php';
+
+
 
 $user_ip = getUserIP();
 $evento = '';
 if(strlen($user_ip) > 5){
-    $geo = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$user_ip));
-    if($geo['geoplugin_status'] == 200){
-        $evento = $geo['geoplugin_countryCode'];
+    $geo = json_decode(file_get_contents('http://www.geoplugin.net/json.gp?ip='.$user_ip));
+    if($geo->geoplugin_status == 200){
+        $evento = $geo->geoplugin_countryCode;
     }
 }
+$correo = get_correo($evento);
 
-echo get_next_to_print($evento);
+echo get_next_to_print($evento, $correo);
 
 ?>

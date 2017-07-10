@@ -43,7 +43,7 @@ def find_next_print(sc):
                 fh.write(base64.b64decode(next_print['imagen']))
 
             # enviar por email
-            sender.email([next_print['correo']], [filename], body)
+            sender.email([next_print['correo']], [filename], next_print['body_correo'])
 
             # windows
             codigo = next_print['codigo']
