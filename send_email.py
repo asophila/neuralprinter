@@ -15,13 +15,15 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import config_mail
+
 COMMASPACE = ', '
-sender = ''
-password = ''
-smtp = ''
+sender = config_mail.sender
+password = config_mail.password
+smtp = config_mail.smtp
+body = config_mail.body
 
-
-def email(recipients, attachments, body):
+def email(recipients, attachments):
     
     if not(sender and password and smtp):
         print("Configurar cuenta de correo")

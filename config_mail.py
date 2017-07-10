@@ -1,0 +1,4 @@
+sender = ''
+password = ''
+smtp = ''
+body = ''
