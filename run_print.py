@@ -47,6 +47,7 @@ def find_next_print(sc):
             # windows
             codigo = next_print['codigo']
             imprimir = True if codigo else False
+            print('Imprimir:', imprimir)
             printer.print_image(filename, print_image = imprimir)
 
             # borrar imagenes

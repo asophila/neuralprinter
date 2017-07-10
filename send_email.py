@@ -33,7 +33,7 @@ def email(recipients, attachments, body):
     outer['To'] = COMMASPACE.join(recipients)
     outer['From'] = sender
     outer.preamble = ''
-    outer.attach(MIMEText(body))
+    outer.attach(MIMEText(body, 'html'))
     # Add the attachments to the message
     for file in attachments:
         try:

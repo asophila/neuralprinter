@@ -37,7 +37,7 @@ function get_next_to_print($ev, $correo){
     }
 
     $conn = get_conn();
-    $sql = "SELECT * FROM `image` WHERE `status` = 'PROCESADO' and `ip` = '" . $_GET['evento'] ."' ORDER BY `id` ASC";
+    $sql = "SELECT * FROM `image` WHERE `status` = 'PROCESADO' and `ip` = '" . $evento ."' ORDER BY `id` ASC";
 
     $result = $conn->query($sql);
     $response = array();
@@ -78,15 +78,15 @@ function get_next_to_print($ev, $correo){
 
 function get_correo($evento){
     if($evento == 'CL'){
-        return 'Gracias por asistir al stand de Practia en el evento Chile.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n';
+        return 'Gracias por asistir al stand de Practia en el evento Chile.<br><br>Te enviamos la imagen que fue procesada usando Redes Neuronales.<br><br>Hay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.<br>';
     }
     if($evento == 'AR'){
-        return 'Gracias por asistir al stand de Practia en el evento Argentina.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n';
+        return 'Gracias por asistir al stand de Practia en el evento Argentina.<br><br>Te enviamos la imagen que fue procesada usando Redes Neuronales.<br><br>Hay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.<br>';
     }
     if($evento == 'PE'){
-        return 'Gracias por asistir al stand de Practia en el evento Perú.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n';
+        return 'Gracias por asistir al stand de Practia en el evento Perú.<br><br>Te enviamos la imagen que fue procesada usando Redes Neuronales.<br><br>Hay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.<br>';
     }
-    return 'Gracias por asistir al stand de Practia.\n\nTe enviamos la imagen que fue procesada usando Redes Neuronales.\n\nHay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.\n';
+    return 'Gracias por asistir al stand de Practia.<br><br>Te enviamos la imagen que fue procesada usando Redes Neuronales.<br><br>Hay miles de proyectos digitales esperando ser abordados, Practia ya está listo para ayudarte a concretarlos.<br>';
 }
 
 header("Content-Type: application/json; charset=utf-8");
