@@ -60,6 +60,9 @@ def find_next_process(sc):
     # do your stuff
     s.enter(10, 1, find_next_process, (sc,))
 
+if not os.path.exists('process/'):
+    os.mkdir('process')
+
 s = sched.scheduler(time.time, time.sleep)
 s.enter(1, 1, find_next_process, (s,))
 s.run()

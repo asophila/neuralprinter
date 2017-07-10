@@ -69,6 +69,8 @@ def find_next_print(sc):
     # do your stuff
     s.enter(10, 1, find_next_print, (sc,))
 
+if not os.path.exists('print/'):
+    os.mkdir('print')
 
 s = sched.scheduler(time.time, time.sleep)
 s.enter(1, 1, find_next_print, (s,))
