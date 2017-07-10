@@ -1,5 +1,6 @@
 import base64
 import os
+import platform
 import requests
 import sched
 import time
@@ -9,7 +10,7 @@ import send_email as sender
 ####################################################
 # completar estos campos de acuerdo al ambiente y evento
 save_images = True
-print_os = 'Windows'
+print_os = platform.system()
 evento = ''
 ####################################################
 
