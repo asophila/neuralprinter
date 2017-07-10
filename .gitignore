@@ -6,3 +6,4 @@ __pycache__/
 *.bak
 *.db
 run_*_local.py
+config_mail.py
