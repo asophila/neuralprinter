@@ -1,10 +1,37 @@
 <?php
 
-function get_next_to_print(){
-    if(!isset($_GET['evento']) || strlen($_GET['evento']) != 2){
+function getUserIP()
+{
+    $client  = @$_SERVER['HTTP_CLIENT_IP'];
+    $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+    $remote  = $_SERVER['REMOTE_ADDR'];
+
+    if(filter_var($client, FILTER_VALIDATE_IP))
+    {
+        $ip = $client;
+    }
+    elseif(filter_var($forward, FILTER_VALIDATE_IP))
+    {
+        $ip = $forward;
+    }
+    else
+    {
+        $ip = $remote;
+    }
+
+    return $ip;
+}
+
+function get_next_to_print($ev){
+    $evento = $ev;
+    if(strlen($evento) != 2 || (isset($_GET['evento']) && strlen($_GET['evento']) == 2)){
+        $evento = $_GET['evento'];
+    }
+    if(strlen($evento) != 2){
         $response = array(
             'error' => true,
-            'message' => 'Debe indicar un evento válido'
+            'message' => 'Debe indicar un evento válido ["'.$evento.'"]',
+            'evento' => $evento
         );
         return json_encode($response);
     }
@@ -34,12 +61,14 @@ function get_next_to_print(){
             'correo' => $row['correo'],
             'name' => $row['name'] . '_'. $row['estilo'],
             'ext' => $row['ext'],
-            'imagen' => base64_encode( $row['imagen_style'] )
+            'imagen' => base64_encode( $row['imagen_style'] ),
+            'evento' => $evento
         );
     } else {
         $response = array(
             'error' => true,
-            'message' => 'No hay más por imprimir'
+            'message' => 'No hay más por imprimir ["'.$evento.'"]',
+            'evento' => $evento
         );
     }
     $conn->close();
@@ -49,6 +78,15 @@ function get_next_to_print(){
 header("Content-Type: application/json; charset=utf-8");
 include 'db.php';
 
-echo get_next_to_print();
+$user_ip = getUserIP();
+$evento = '';
+if(strlen($user_ip) > 5){
+    $geo = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$user_ip));
+    if($geo['geoplugin_status'] == 200){
+        $evento = $geo['geoplugin_countryCode'];
+    }
+}
+
+echo get_next_to_print($evento);
 
 ?>

@@ -36,7 +36,7 @@
         <div id="data" class="row center-align">
             <table class="striped">
                 <thead>
-            <tr><th></th><th>Nombre</th><th>Correo</th><th>Empresa</th><th>Cargo</th><th>Código</th><th>Estilo</th><th>Imagen</th><th>Estado</th><th>Fecha</th></tr>
+            <tr><th>Nombre</th><th>Correo</th><th>Empresa</th><th>Cargo</th><th>Código</th><th>Evento</th><th>Estilo</th><th>Imagen</th><th>Estado</th><th>Fecha</th></tr>
 </thead><tbody>
 <?php
 include 'db.php';
@@ -56,8 +56,8 @@ while ( $row = mysqli_fetch_array($result))
             $code = '';
         }
     echo '<tr>';
-    echo '<td>'.$row['id'].'</td><td>'.$row['usuario'].'</td><td>'.$row['correo'].'</td>';
-    echo '<td>'.$row['empresa'].'</td><td>'.$row['cargo'].'</td><td>'.$code.'</td>';
+    echo '<td>'.$row['usuario'].'</td><td>'.$row['correo'].'</td>';
+    echo '<td>'.$row['empresa'].'</td><td>'.$row['cargo'].'</td><td>'.$code.'</td><td>'.$row['ip'].'</td>';
     echo '<td>'.$row['estilo'].'</td><td>'.$row['name'].$row['ext'].'</td><td>'.$row['status'].'</td><td>'.$row['timestamp'].'</td>';
     echo '</tr>';
 }
