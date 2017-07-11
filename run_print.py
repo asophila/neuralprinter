@@ -1,3 +1,13 @@
+"""
+
+Dependencias, instalar con pip o conda
+
+- requests
+- pillow (solo para imprimir en windows)
+- pywin32 (solo para imprimir en windows)
+
+"""
+
 import base64
 import os
 import platform
