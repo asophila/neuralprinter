@@ -37,6 +37,8 @@ def find_next_process(sc):
                 os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --cuda 0')
                 while not os.path.exists(path_styled):
                     process = True
+                # styled con marco
+                image.printeable_image(path_styled).save(path_styled)
 
                 #TODO: cambiar por procesada
                 #imagen = filename

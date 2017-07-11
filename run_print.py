@@ -17,8 +17,6 @@ import time
 
 import send_email as sender
 
-import image
-
 ####################################################
 # completar estos campos de acuerdo al ambiente y evento
 save_images = True
@@ -51,8 +49,6 @@ def find_next_print(sc):
                 filename = 'print/' + str(time.time()) + '_' + next_print['name'] + next_print['ext']
                 with open(filename, "wb") as fh:
                     fh.write(base64.b64decode(next_print['imagen']))
-                # merge con marco
-                image.printeable_image(filename).save(filename)
 
                 # enviar por email
                 sender.email([next_print['correo']], [filename])
