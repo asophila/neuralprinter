@@ -1,7 +1,7 @@
 /* Reset */
 header nav {
   height: 66px;
-  background-color: #CE2021;
+  background-color: #333333;
 }
 
 main {
@@ -196,4 +196,8 @@ input:-webkit-autofill:hover {
     opacity: 0;
     -webkit-transition: all 0.3s ease-in;
     transition: all 0.3s ease-in;
+}
+
+.break-word {
+    word-break: normal;
 }

@@ -23,9 +23,6 @@
             border-radius: 5px;
             padding: 20px;
             color: white;
-        }        
-        h5 {
-            color: white;
         }
         .slider .slides,
         .slider .indicators .indicator-item.active {

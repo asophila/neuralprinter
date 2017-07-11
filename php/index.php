@@ -108,8 +108,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $codigo = $code_valid['code'];
             $target_dir = "uploads/";
-            $target_file = $target_dir . basename($_FILES["imagen"]["name"]);
-            $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+            $image_name = basename($_FILES["imagen"]["name"]);
+            $image_name_clean = str_replace(' ', '', $image_name);
+            $target_file = $target_dir . $image_name_clean;
+            $imageFileType = strtolower(pathinfo($image_name, PATHINFO_EXTENSION));
 
 
             if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
@@ -119,14 +121,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // if everything is ok, try to upload file
             else {
                 if (move_uploaded_file($_FILES["imagen"]["tmp_name"], $target_file)) {
-                    $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\"";    
+                    $uploadMessage = "Se ha enviado tu imagen \"". $image_name . "\"";    
 
                     //guardar imagen en BD
                     $image = addslashes(file_get_contents($target_file)); //SQL Injection defence!
-                    $name = pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_FILENAME);
-                    $ext = '.' . $imageFileType; //pathinfo(basename( $_FILES["imagen"]["name"]), PATHINFO_EXTENSION);
+                    $ext = '.' . $imageFileType;
                     $sql = "INSERT INTO `image` (`usuario`, `ip`, `correo`, `empresa`, `cargo`, `estilo`, `name`, `ext`, `imagen`, `status`)
-                                        VALUES ('$usuario', '$evento', '$correo', '$empresa', '$cargo', '$estilo', '$name', '$ext', '$image', 'A_PROCESAR')";
+                                        VALUES ('$usuario', '$evento', '$correo', '$empresa', '$cargo', '$estilo', '$image_name_clean', '$ext', '$image', 'A_PROCESAR')";
                     
                     $conn = get_conn();
                     if ($conn->query($sql) === TRUE) {
@@ -135,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $sql = "UPDATE `code` SET `status` = 1, `image_id` = $last_id WHERE `key` = '$codigo'";
                             $conn->query($sql);
                         }
-                        $uploadMessage = "Se ha enviado tu imagen \"". basename( $_FILES["imagen"]["name"]). "\""; 
+                        $uploadMessage = "Se ha enviado tu imagen \"". $image_name . "\""; 
                         //$show_link_image = true;
                         $_SESSION['show_link'] = true;
                         $codigo = '';
@@ -159,7 +160,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header>
         <div class="navbar-fixed">
             <nav>
-                <div class="nav-wrapper z-depth-1"> <a href="./" class="brand-logo left"><img src="images/logo.png" alt="Practia" class="responsive-img"></a>                    </div>
+                <div class="nav-wrapper z-depth-1">
+                    <a href="./" class="brand-logo left"><img src="images/logo.png" alt="Practia" class="responsive-img"></a>
+                    <ul id="nav-mobile" class="right">
+                        <li><a href="./demos.php">Demos</a></li>
+                    </ul>
+                </div>
                 <div class="progress-bar">
                     <div class="progress z-depth-1 hide">
                         <div class="indeterminate"></div>
@@ -198,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="row valign-wrapper">
                     <div class="col hide-on-med-and-up s1">
-                        <a onclick="Materialize.toast('<span>Consigue e ingresa un código para imprimir tu foto con el estilo que quieras</span>', 4000)">
+                        <a onclick="Materialize.toast($toastContent, 4000)">
                         <i class="material-icons prefix">info_outline</i></a>
                     </div>
                     <div class="col hide-on-small-only m1">
@@ -247,6 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
     <script type="text/javascript" src="js/practia.js"></script>
     <script>
+        var $toastContent = $('<p class="center-align break-word">Consigue un código para imprimir tu foto con el estilo que quieras</p>');
         $(document).ready(function () {
         <?php
                 if (isset($usuario)) {
