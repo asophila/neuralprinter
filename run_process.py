@@ -30,7 +30,7 @@ def find_next_process(sc):
                 with open(filename, "wb") as fh:
                     fh.write(base64.b64decode(next_style['imagen']))
                 # ajustar
-                image.clean_image(filename).save(filename)
+                image.fit_image(filename).save(filename)
 
                 # procesar imagen
                 path_styled = 'process/' + next_style['name'] + '_' + next_style['estilo'] + next_style['ext']           
