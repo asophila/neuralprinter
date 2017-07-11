@@ -23,9 +23,12 @@ password = config_mail.password
 smtp = config_mail.smtp
 body = config_mail.body
 
+def ok():
+    return sender and password and smtp
+
 def email(recipients, attachments):
     
-    if not(sender and password and smtp):
+    if not ok():
         print("Configurar cuenta de correo")
         return
 

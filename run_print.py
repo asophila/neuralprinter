@@ -21,8 +21,6 @@ else:
     print('imprimir Linux')
     import print_linux as printer
 
-s = sched.scheduler(time.time, time.sleep)
-
 def find_next_print(sc):
     try:
         continuar = True
@@ -71,9 +69,13 @@ def find_next_print(sc):
     # do your stuff
     s.enter(10, 1, find_next_print, (sc,))
 
-if not os.path.exists('print/'):
-    os.mkdir('print')
+if not sender.ok():
+    print('Configurar cuenta de correo')
 
-s = sched.scheduler(time.time, time.sleep)
-s.enter(1, 1, find_next_print, (s,))
-s.run()
+else:
+    if not os.path.exists('print/'):
+        os.mkdir('print')
+
+    s = sched.scheduler(time.time, time.sleep)
+    s.enter(1, 1, find_next_print, (s,))
+    s.run()

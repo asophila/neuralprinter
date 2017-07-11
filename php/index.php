@@ -197,13 +197,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="input-field col s12 m6"> <input name="cargo" id="cargo" type="text" class="validate" required> <label for="cargo">* Cargo</label>                        </div>
                 </div>
                 <div class="row valign-wrapper">
-                    <div class="col s1 m1">
-                        <a class="tooltipped" data-position="right" data-delay="50" data-tooltip="Consigue e ingresa un código para imprimir tu foto con estilo">
+                    <div class="col hide-on-med-and-up s1">
+                        <a onclick="Materialize.toast('<span>Consigue e ingresa un código para imprimir tu foto con el estilo que quieras</span>', 4000)">
                         <i class="material-icons prefix">info_outline</i></a>
+                    </div>
+                    <div class="col hide-on-small-only m1">
+                        <a class="tooltipped" data-position="right" data-delay="50" data-tooltip="Consigue e ingresa un código para imprimir tu foto con el estilo que quieras"><i class="material-icons prefix">info_outline</i></a>
                     </div>
                     <div class="input-field col s10 m11">                        
                         <input name="codigo" id="codigo" type="text" class="validate">
-                        <label for="codigo">Código</label>
+                        <label for="codigo">Código para imprimir</label>
                     </div>
                 </div>
                 <?php if(!isset($_SESSION['evento']) | strlen($_SESSION['evento']) < 1) { ?>
