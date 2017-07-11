@@ -7,9 +7,9 @@ def fit_image(imagen):
     img = Image.open(imagen)
     img_size = img.size
 
-    if bg_size[0] < bg_size[1] and base_size != img_size:
+    if img_size[0] < img_size[1] and base_size != img_size:
         img = img.resize(base_size)
-    else if bg_size[0] > bg_size[1] and base_size_l != img_size:
+    elif img_size[0] > img_size[1] and base_size_l != img_size:
         img = img.resize(base_size_l)
 
     return img
