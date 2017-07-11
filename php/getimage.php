@@ -41,8 +41,14 @@
 <?php
 include 'db.php';
 
+
+$limit = 10;
+if(isset($_GET['limit'])){
+    $limit = $_GET['limit'];
+}
+
 $conn = get_conn();
-$sql = "SELECT * FROM `image` ORDER BY `id` DESC";
+$sql = "SELECT * FROM `image` ORDER BY `id` DESC LIMIT " . $limit;
 $result = $conn->query($sql);
 
 while ( $row = mysqli_fetch_array($result))
@@ -58,7 +64,7 @@ while ( $row = mysqli_fetch_array($result))
     echo '<tr>';
     echo '<td>'.$row['id'].'</td><td>'.$row['usuario'].'</td><td>'.$row['correo'].'</td>';
     echo '<td>'.$row['empresa'].'</td><td>'.$row['cargo'].'</td><td>'.$code.'</td><td>'.$row['ip'].'</td>';
-    echo '<td>'.$row['estilo'].'</td><td>'.$row['name'].$row['ext'].'</td><td>'.$row['status'].'</td><td>'.$row['timestamp'].'</td>';
+    echo '<td>'.$row['estilo'].'</td><td><a target="_blank" href="./image.php?id='.$row['id'].'">'.$row['name'].$row['ext'].'</a></td><td>'.$row['status'].'</td><td>'.$row['timestamp'].'</td>';
     echo '</tr>';
 }
 
