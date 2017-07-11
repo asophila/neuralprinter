@@ -113,7 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $target_file = $target_dir . $image_name_clean;
             $imageFileType = strtolower(pathinfo($image_name, PATHINFO_EXTENSION));
 
-
             if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
                 $uploadMessage = "Sube una imagen JPG, JPEG o PNG.";
                 $uploadOk = 0;
@@ -125,9 +124,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     //guardar imagen en BD
                     $image = addslashes(file_get_contents($target_file)); //SQL Injection defence!
+                    $name = pathinfo($image_name_clean, PATHINFO_FILENAME);
                     $ext = '.' . $imageFileType;
                     $sql = "INSERT INTO `image` (`usuario`, `ip`, `correo`, `empresa`, `cargo`, `estilo`, `name`, `ext`, `imagen`, `status`)
-                                        VALUES ('$usuario', '$evento', '$correo', '$empresa', '$cargo', '$estilo', '$image_name_clean', '$ext', '$image', 'A_PROCESAR')";
+                                        VALUES ('$usuario', '$evento', '$correo', '$empresa', '$cargo', '$estilo', '$name', '$ext', '$image', 'A_PROCESAR')";
                     
                     $conn = get_conn();
                     if ($conn->query($sql) === TRUE) {
