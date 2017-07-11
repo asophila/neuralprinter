@@ -34,7 +34,7 @@ def find_next_process(sc):
 
                 # procesar imagen
                 path_styled = 'process/' + next_style['name'] + '_' + next_style['estilo'] + next_style['ext']           
-                os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --content-scale 2 --cuda 0')
+                os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --cuda 0')
                 while not os.path.exists(path_styled):
                     process = True
 
