@@ -96,7 +96,13 @@ def fit_image(imagen):
     else:
         #print('add top-bottom')
         new_size = get_size(base_size, img_size)
-        img = img.crop((0, -new_size[1], new_size[0][0], new_size[0][1] - new_size[1]))
+        # fill black        
+        #img = img.crop((0, -new_size[1], new_size[0][0], new_size[0][1] - new_size[1]))
+        # fill white or personalizable
+        bg = Image.new('RGBA', new_size[0], (255,255,255,255))
+        bg.paste(img, (0, new_size[1]))
+        img = bg
+        # end fill
         img = img.resize(base_size)
 
     return img
