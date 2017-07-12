@@ -70,6 +70,7 @@ def fit_image(imagen):
 
     img = Image.open(imagen)
     img_size = img.size
+
     try:
         img, degrees = fix_orientation(img)
         if degrees == 0 and img_size[0] > img_size[1]:
@@ -87,8 +88,17 @@ def fit_image(imagen):
         new_size = get_size(base_size, img_size)
         #print(img_size, '>', new_size[0], ':', new_size[1])
         if new_size[1] > 0:
-            #print('cambiar relacion')
-            img = img.crop((0, new_size[1], new_size[0][0], new_size[0][1]))
+            #print('cambiar relacion', imagen)
+            if (img_size[0]/img_size[1]) > (base_size[0]/base_size[1]):                
+                # fill black
+                #img = img.crop((0, -new_size[1], new_size[0][0], new_size[0][1] - new_size[1]))
+                # fill white or personalizable
+                bg = Image.new('RGBA', new_size[0], (255,255,255,255))
+                bg.paste(img, (0, new_size[1]))
+                img = bg
+                # end fill
+            else:
+                img = img.crop((0, new_size[1], new_size[0][0], new_size[0][1]))
             img = img.resize(base_size)
         elif img_size != new_size[0]:
             #print('resize')
@@ -96,7 +106,7 @@ def fit_image(imagen):
     else:
         #print('add top-bottom')
         new_size = get_size(base_size, img_size)
-        # fill black
+        # fill black        
         #img = img.crop((0, -new_size[1], new_size[0][0], new_size[0][1] - new_size[1]))
         # fill white or personalizable
         bg = Image.new('RGBA', new_size[0], (255,255,255,255))
