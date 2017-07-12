@@ -93,6 +93,11 @@ def fit_image(imagen):
         elif img_size != new_size[0]:
             #print('resize')
             img = img.resize(base_size)
+    else:
+        #print('add top-bottom')
+        new_size = get_size(base_size, img_size)
+        img = img.crop((0, -new_size[1], new_size[0][0], new_size[0][1] - new_size[1]))
+        img = img.resize(base_size)
 
     return img
 
