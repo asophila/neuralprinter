@@ -38,8 +38,8 @@ def find_next_process(sc):
                 while not os.path.exists(path_styled):
                     process = True
                 # styled con marco
-                if next_style['evento'] != 'CL':
-                    image.printeable_image(path_styled).save(path_styled)
+                #if next_style['evento'] != 'CL':
+                image.printeable_image(path_styled).save(path_styled)
 
                 #TODO: cambiar por procesada
                 #imagen = filename
