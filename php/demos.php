@@ -99,6 +99,12 @@ if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) ob_start("ob_gzhandl
                                 <h5>Starry night</h5>
                             </div>
                         </li>
+                        <li>
+                            <img src="./images/demo/portrait_van-gogh.jpg">
+                            <div class="caption center-align">
+                                <h5>van Gogh</h5>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -136,6 +142,12 @@ if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) ob_start("ob_gzhandl
                             <img src="./images/demo/ny_starry-night.jpg">
                             <div class="caption center-align">
                                 <h5>Starry night</h5>
+                            </div>
+                        </li>
+                        <li>
+                            <img src="./images/demo/ny_van-gogh.jpg">
+                            <div class="caption center-align">
+                                <h5>van Gogh</h5>
                             </div>
                         </li>
                     </ul>
