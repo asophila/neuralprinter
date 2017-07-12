@@ -78,6 +78,8 @@ def fit_image(imagen):
     except:
         error = True
         #print('no exif image', imagen)
+        if img_size[0] > img_size[1]:
+            img = img.rotate(90, expand=1)
 
     img_size = img.size
 
