@@ -26,15 +26,15 @@ def find_next_process(sc):
 
                 style = next_style['estilo']
                 # guardar imagen para procesar
-                filename = 'process/' + str(time.time()) + '_' + next_style['name'] + next_style['ext']
+                filename = 'process/' + next_style['name'] + next_style['ext']
                 with open(filename, "wb") as fh:
                     fh.write(base64.b64decode(next_style['imagen']))
                 # ajustar
                 image.fit_image(filename).save(filename)
 
                 # procesar imagen
-                path_styled = 'process/' + str(time.time()) + '_' + next_style['name'] + '_' + next_style['estilo'] + next_style['ext']           
-                os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --cuda 0')
+                path_styled = 'process/' + next_style['name'] + '_' + next_style['estilo'] + next_style['ext']           
+                os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --cuda 1')
                 while not os.path.exists(path_styled):
                     process = True
                 # styled con marco
