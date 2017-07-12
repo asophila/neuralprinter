@@ -16,7 +16,8 @@ function get_next_to_process(){
             'name' => $row['name'],
             'ext' => $row['ext'],
             'estilo' => $row['estilo'],
-            'imagen' => base64_encode( $row['imagen'] )
+            'imagen' => base64_encode( $row['imagen'] ),
+            'evento' => $row['ip']
         );
     } else {
         $response = array(

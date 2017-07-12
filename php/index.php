@@ -234,6 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <option value="candy" data-icon="images/styles/candy.jpg" class="left circle">Candy</option>
                             <option value="udnie" data-icon="images/styles/udnie.jpg" class="left circle">Udnie</option>
                             <option value="starry-night" data-icon="images/styles/starry-night.jpg" class="left circle">Starry Night</option>
+                            <option value="vg_portrait" data-icon="images/styles/van-gogh.jpg" class="left circle">van Gogh</option>
                         </select> <label>* Estilo</label> </div>
                     <div class="file-field input-field col s12 m8 pull-m4">
                         <div class="btn"><i class="material-icons left">photo</i><span>Imagen</span> <input name="imagen" type="file"
