@@ -14,7 +14,7 @@ include 'db.php';
 
 $result = update_status($_POST['id'], $_POST['status']);
 $response = array(
-            'error' => $result,
+            'error' => !$result,
             'message' => ''
         );
 echo json_encode($response);

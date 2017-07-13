@@ -12,7 +12,7 @@ if(isset($_GET['id'])){
     if($row['imagen']){
         echo '<img src="data:image/jpeg;base64,'.base64_encode( $row['imagen'] ).'"/>';
     } else {
-        echo '';
+        echo '<p>Sin imagen</p>';
     }
 }
 ?>

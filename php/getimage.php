@@ -33,6 +33,14 @@
     </header>
     <main class="xs-pl-20 xs-pr-20">
         <div class="row center-align"> <button id="btnExport" class="btn waves-effect waves-light btn-large" type="submit" name="action"><i class="material-icons right">file_download</i>Descargar Excel</button></div>
+        
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">search</i>
+                <input name="filtro" id="filtro" type="text" placeholder="Filtrar por Nombre, Correo o Estado" onkeyup="filtrar()">
+                <label for="filtro">Filtrar</label>
+            </div>
+        </div>
         <div id="data" class="row center-align">
             <table class="striped">
                 <thead>
@@ -42,7 +50,7 @@
 include 'db.php';
 
 
-$limit = 10;
+$limit = 50;
 if(isset($_GET['limit'])){
     $limit = $_GET['limit'];
 }
@@ -99,6 +107,44 @@ $conn->close();
                 $("body").addClass("loaded");
             }, 200);
         });
+    </script>
+    <script>
+        function filtrar() {
+        // Declare variables 
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("filtro");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("data");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td1 = tr[i].getElementsByTagName("td")[1];
+            td2 = tr[i].getElementsByTagName("td")[2];
+            td9 = tr[i].getElementsByTagName("td")[9];
+            if (td1) {
+                if (td1.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    //tr[i].style.display = "none";
+                    if (td2) {
+                        if (td2.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            //tr[i].style.display = "none";
+                            if (td9) {
+                                if (td9.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                                    tr[i].style.display = "";
+                                } else {
+                                    tr[i].style.display = "none";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        }
     </script>
 </body>
 
