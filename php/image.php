@@ -10,9 +10,15 @@ if(isset($_GET['id'])){
     $row = mysqli_fetch_array($result);
 
     if($row['imagen']){
-        echo '<img src="data:image/jpeg;base64,'.base64_encode( $row['imagen'] ).'"/>';
+        echo '<img width="400" src="data:image/jpeg;base64,'.base64_encode( $row['imagen'] ).'"/>';
     } else {
-        echo '<p>Sin imagen</p>';
+        echo '';
+    }
+
+    if($row['imagen_style']){
+        echo '<img width="400" src="data:image/jpeg;base64,'.base64_encode( $row['imagen_style'] ).'"/>';
+    } else {
+        echo '';
     }
 }
 ?>
