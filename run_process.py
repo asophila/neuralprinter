@@ -30,7 +30,7 @@ def find_next_process(sc):
                 with open(filename, "wb") as fh:
                     fh.write(base64.b64decode(next_style['imagen']))
                 # ajustar
-                image.fit_image(filename).save(filename)
+                #image.fit_image(filename).save(filename)
 
                 # procesar imagen
                 path_styled = 'process/' + next_style['name'] + '_' + next_style['estilo'] + next_style['ext']           
@@ -38,8 +38,8 @@ def find_next_process(sc):
                 while not os.path.exists(path_styled):
                     process = True
                 # styled con marco
-                if not 'ppm_sm_pd' in filename:
-                    image.printeable_image(path_styled).save(path_styled)
+                #if not 'ppm_sm_pd' in filename:
+                #    image.printeable_image(path_styled).save(path_styled)
 
                 #TODO: cambiar por procesada
                 #imagen = filename
