@@ -6,8 +6,6 @@ import sched
 import time
 import urllib.request
 
-import image
-
 def find_next_process(sc):
     try:
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
