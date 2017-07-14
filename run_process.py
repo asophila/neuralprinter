@@ -11,7 +11,7 @@ import image
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
 
 ###################################################################################################
-url = 'http://practiapinta.me'
+url = 'http://pinta.bicubi.co'
 save_images = True
 ###################################################################################################
 
@@ -51,7 +51,7 @@ def upload_image(filename, upload_data):
 
 def set_status(id, estado):
     print('-----------------------------------')
-    r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': id, 'status': estado}, headers=headers)
+    r = requests.post(url + '/set_status.php', data={'id': id, 'status': estado}, headers=headers)
     print(str(time.time()), str(id), '> Estado >', estado)
     print('-----------------------------------')
     return
@@ -62,16 +62,15 @@ def save_image_to_process(data, fit = False):
         fh.write(base64.b64decode(data['imagen']))
 
     # ajustar
-    orientation = 0
     if fit:
-        image.fit_image(filename).save(filename)
+        image.fit_image(filename)
         
-    return filename, orientation
+    return filename
 
 def process_image(data, model):
     # guardar imagen para procesar
     fit = True
-    filename, orientation = save_image_to_process(data, fit)
+    filename = save_image_to_process(data, fit)
     # procesar imagen
     path_styled = 'process/' + str(time.time()) + '_' + data['name'] + '_' + data['estilo'] + data['ext']           
     os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --cuda 1')
@@ -81,12 +80,7 @@ def process_image(data, model):
     # styled con marco
     border = (data['evento'] == 'CL') and (not 'ppm_sm_pd' in filename)
     if border:
-        image.printeable_image(path_styled).save(path_styled)
-
-    # original orientation
-    if orientation > 0:
-        print('orientacion original', orientation)
-        image.set_orientation(path_styled, data['imagen'])
+        image.printeable_image(path_styled)
 
     # upload image styled
     print('subir imagen')

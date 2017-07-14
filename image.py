@@ -34,6 +34,7 @@ def fix_orientation(img, save_over=False):
     elif save_over:
         raise ValueError("You can't use `save_over` when passing an Image instance.  Use a file path instead.")
     try:
+        _exif = img.info['exif']
         orientation = img._getexif()[EXIF_ORIENTATION_TAG]
     except (TypeError, AttributeError, KeyError):
         raise ValueError("Image file has no EXIF data.")
@@ -42,23 +43,17 @@ def fix_orientation(img, save_over=False):
         img = img.transpose(degrees)
         if save_over and path is not None:
             try:
-                img.save(path, quality=95, optimize=1)
+                img.save(path, quality=95, optimize=1, exif=_exif)
             except IOError:
                 # Try again, without optimization (PIL can't optimize an image
                 # larger than ImageFile.MAXBLOCK, which is 64k by default).
                 # Setting ImageFile.MAXBLOCK should fix this....but who knows.
-                img.save(path, quality=95)
-        return (img, degrees, orientation)
+                img.save(path, quality=95, exif=_exif)
+        return (img, degrees, orientation, _exif)
     else:
-        return (img, 0, orientation)
+        return (img, 0, orientation, _exif)
 
 ###############
-
-def set_orientation(path_styled, original):
-    #TODO
-
-    return
-
 
 def get_size(base_size, img_size):
     new_size = img_size
@@ -72,16 +67,15 @@ def get_size(base_size, img_size):
 
     return new_size, int(abs(img_size[1] - new_size[1])/2)
 
-def fit_image(imagen):
-    base = Image.open('base.png')
-    base_size = base.size
-
+def fix_image(imagen):
     img = Image.open(imagen)
-    
     # fix orientation
+    degrees = 0
+    orientation = 0
+    exif = None
     try:
         img_size = img.size  
-        img, degrees, orientation = fix_orientation(img)
+        img, degrees, orientation, exif = fix_orientation(img)
         #print('fix orientation', imagen, orientation, degrees)
     except:
         error = True
@@ -89,10 +83,19 @@ def fit_image(imagen):
 
     # rotate
     img_size = img.size
+    rotated = False
     if img_size[0] > img_size[1]:
         img = img.rotate(270, expand=1)
+        rotated = True
         #print('rotate', imagen)
-    #img.save('x_' + imagen)
+
+    return img, rotated, orientation, exif
+
+def fit_image(imagen):
+    base = Image.open('base.png')
+    base_size = base.size
+
+    img, rotated, orientation, exif = fix_image(imagen)
 
     # fit a base
     img_size = img.size
@@ -101,16 +104,14 @@ def fit_image(imagen):
         #print(img_size, '>', new_size[0], ':', new_size[1])
         if new_size[1] > 0:
             #print('cambiar relacion', imagen)
-            if (img_size[0]/img_size[1]) > (base_size[0]/base_size[1]):                
-                # fill black
-                #img = img.crop((0, -new_size[1], new_size[0][0], new_size[0][1] - new_size[1]))
-                # fill white or personalizable
+            if (img_size[0]/img_size[1]) > (base_size[0]/base_size[1]):
                 bg = Image.new('RGBA', new_size[0], (255,255,255,255))
                 bg.paste(img, (0, new_size[1]))
                 img = bg
-                # end fill
             else:
-                img = img.crop((0, new_size[1], new_size[0][0], new_size[0][1]))
+                bg = Image.new('RGBA', new_size[0], (255,255,255,255))
+                bg.paste(img, (0, -new_size[1]))
+                img = bg
             img = img.resize(base_size)
         elif img_size != new_size[0]:
             #print('resize', img_size, new_size[0])
@@ -127,15 +128,43 @@ def fit_image(imagen):
         # end fill
         img = img.resize(base_size)
 
-    return img
+    if rotated:
+        img = img.rotate(90, expand=1)
+
+    if exif:
+        if orientation == 3:
+            img = img.rotate(180, expand=1)
+        elif orientation == 6:
+            img = img.rotate(90, expand=1)
+        elif orientation == 8:
+            img = img.rotate(270, expand=1)
+        img.save(imagen, exif=exif)
+    else:
+        img.save(imagen)
+
+    return img, orientation, exif
 
 def printeable_image(imagen, base = True):
     foreground = Image.open('base.png')
     fg_size = foreground.size
-    background =  Image.open(imagen)
-    bg_size = background.size
 
-    print(fg_size, bg_size)
+    img, rotated, orientation, exif = fix_image(imagen)
+
     if base:
-        background.paste(foreground, (0, 0), foreground)
-    return background
+        img.paste(foreground, (0, 0), foreground)
+
+    if rotated:
+        img = img.rotate(90, expand=1)
+
+    if exif:
+        if orientation == 3:
+            img = img.rotate(180, expand=1)
+        elif orientation == 6:
+            img = img.rotate(90, expand=1)
+        elif orientation == 8:
+            img = img.rotate(270, expand=1)
+        img.save(imagen, exif=exif)
+    else:
+        img.save(imagen)
+        
+    return img, orientation, exif
