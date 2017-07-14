@@ -51,7 +51,7 @@ def upload_image(filename, upload_data):
 
 def set_status(id, estado):
     print('-----------------------------------')
-    r = requests.post(url + '/set_status.php', data={'id': id, 'status': estado}, headers=headers)
+    r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': id, 'status': estado}, headers=headers)
     print(str(time.time()), str(id), '> Estado >', estado)
     print('-----------------------------------')
     return
