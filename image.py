@@ -67,7 +67,7 @@ def get_size(base_size, img_size):
 
     return new_size, int(abs(img_size[1] - new_size[1])/2)
 
-def fix_image(imagen):
+def fix_image(imagen, _exif = None):
     img = Image.open(imagen)
     # fix orientation
     degrees = 0
@@ -80,6 +80,8 @@ def fix_image(imagen):
     except:
         error = True
         #print('no exif image', imagen, img_size)
+        # add exif input
+        exif = _exif
 
     # rotate
     img_size = img.size
@@ -144,14 +146,13 @@ def fit_image(imagen):
 
     return img, orientation, exif
 
-def printeable_image(imagen, base = True):
+def printeable_image(imagen, _exif):
     foreground = Image.open('base.png')
     fg_size = foreground.size
 
-    img, rotated, orientation, exif = fix_image(imagen)
+    img, rotated, orientation, exif = fix_image(imagen, _exif)
 
-    if base:
-        img.paste(foreground, (0, 0), foreground)
+    img.paste(foreground, (0, 0), foreground)
 
     if rotated:
         img = img.rotate(90, expand=1)

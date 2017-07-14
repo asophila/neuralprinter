@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     //guardar imagen en BD
                     $image = addslashes(file_get_contents($target_file)); //SQL Injection defence!
                     $name = pathinfo($image_name_clean, PATHINFO_FILENAME);
-                    $ext = '.' . $imageFileType;
+                    $ext = '.jpg';// '.' . $imageFileType;
                     $sql = "INSERT INTO `image` (`usuario`, `ip`, `correo`, `empresa`, `cargo`, `estilo`, `name`, `ext`, `imagen`, `status`)
                                         VALUES ('$usuario', '$evento', '$correo', '$empresa', '$cargo', '$estilo', '$name', '$ext', '$image', 'A_PROCESAR')";
                     

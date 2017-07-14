@@ -63,14 +63,14 @@ def save_image_to_process(data, fit = False):
 
     # ajustar
     if fit:
-        image.fit_image(filename)
+        img, orientation, exif = image.fit_image(filename)
         
-    return filename
+    return filename, exif
 
 def process_image(data, model):
     # guardar imagen para procesar
     fit = True
-    filename = save_image_to_process(data, fit)
+    filename, exif = save_image_to_process(data, fit)
     # procesar imagen
     path_styled = 'process/' + str(time.time()) + '_' + data['name'] + '_' + data['estilo'] + data['ext']           
     os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --cuda 1')
@@ -80,7 +80,7 @@ def process_image(data, model):
     # styled con marco
     border = (not 'ppm_sm_pd' in filename)# and (data['evento'] == 'CL')
     if border:
-        image.printeable_image(path_styled)
+        image.printeable_image(path_styled, exif)
 
     # upload image styled
     print('subir imagen')
