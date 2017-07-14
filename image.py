@@ -48,11 +48,17 @@ def fix_orientation(img, save_over=False):
                 # larger than ImageFile.MAXBLOCK, which is 64k by default).
                 # Setting ImageFile.MAXBLOCK should fix this....but who knows.
                 img.save(path, quality=95)
-        return (img, degrees)
+        return (img, degrees, orientation)
     else:
-        return (img, 0)
+        return (img, 0, orientation)
 
 ###############
+
+def set_orientation(path_styled, original):
+    #TODO
+
+    return
+
 
 def get_size(base_size, img_size):
     new_size = img_size
@@ -61,6 +67,8 @@ def get_size(base_size, img_size):
         new_size = (img_size[0], int((img_size[0] * base_size[1]) / base_size[0]))
     elif img_size[0] > img_size[1]:
         new_size = (int((img_size[1] * base_size[1]) / base_size[0]), img_size[1])
+    else:
+        new_size = (img_size[0], int((img_size[1] * base_size[1]) / base_size[0]))
 
     return new_size, int(abs(img_size[1] - new_size[1])/2)
 
@@ -69,21 +77,25 @@ def fit_image(imagen):
     base_size = base.size
 
     img = Image.open(imagen)
-    img_size = img.size
-
+    
+    # fix orientation
     try:
-        img, degrees = fix_orientation(img)
-        if degrees == 0 and img_size[0] > img_size[1]:
-            img = img.rotate(90, expand=1)
-        #print('rotate', degrees)
+        img_size = img.size  
+        img, degrees, orientation = fix_orientation(img)
+        #print('fix orientation', imagen, orientation, degrees)
     except:
         error = True
-        #print('no exif image', imagen)
-        if img_size[0] > img_size[1]:
-            img = img.rotate(90, expand=1)
+        #print('no exif image', imagen, img_size)
 
+    # rotate
     img_size = img.size
+    if img_size[0] > img_size[1]:
+        img = img.rotate(270, expand=1)
+        #print('rotate', imagen)
+    #img.save('x_' + imagen)
 
+    # fit a base
+    img_size = img.size
     if img_size[0] != img_size[1]:
         new_size = get_size(base_size, img_size)
         #print(img_size, '>', new_size[0], ':', new_size[1])
@@ -101,7 +113,7 @@ def fit_image(imagen):
                 img = img.crop((0, new_size[1], new_size[0][0], new_size[0][1]))
             img = img.resize(base_size)
         elif img_size != new_size[0]:
-            #print('resize')
+            #print('resize', img_size, new_size[0])
             img = img.resize(base_size)
     else:
         #print('add top-bottom')
@@ -120,11 +132,8 @@ def fit_image(imagen):
 def printeable_image(imagen, base = True):
     foreground = Image.open('base.png')
     fg_size = foreground.size
-    background = Image.open(imagen)
+    background =  Image.open(imagen)
     bg_size = background.size
-
-    if bg_size[0] > bg_size[1]:
-        background = background.rotate(90, expand=1)
 
     if base:
         background.paste(foreground, (0, 0), foreground)
