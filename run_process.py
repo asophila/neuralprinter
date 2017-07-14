@@ -78,7 +78,7 @@ def process_image(data, model):
         process = True
 
     # styled con marco
-    border = (data['evento'] == 'CL') and (not 'ppm_sm_pd' in filename)
+    border = (not 'ppm_sm_pd' in filename)# and (data['evento'] == 'CL')
     if border:
         image.printeable_image(path_styled)
 
