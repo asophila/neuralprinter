@@ -135,6 +135,7 @@ def printeable_image(imagen, base = True):
     background =  Image.open(imagen)
     bg_size = background.size
 
+    print(fg_size, bg_size)
     if base:
         background.paste(foreground, (0, 0), foreground)
     return background

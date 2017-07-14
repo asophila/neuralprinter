@@ -52,7 +52,7 @@ def upload_image(filename, upload_data):
 def set_status(id, estado):
     print('-----------------------------------')
     r = requests.post(url + '/set_status.php', data={'id': id, 'status': estado}, headers=headers)
-    print(str(time.time()), 'Estado >', estado)
+    print(str(time.time()), str(id), '> Estado >', estado)
     print('-----------------------------------')
     return
 
@@ -72,7 +72,6 @@ def process_image(data, model):
     # guardar imagen para procesar
     fit = True
     filename, orientation = save_image_to_process(data, fit)
-    print('procesar')
     # procesar imagen
     path_styled = 'process/' + str(time.time()) + '_' + data['name'] + '_' + data['estilo'] + data['ext']           
     os.system('python neural_style/neural_style.py eval --content-image ' + filename + ' --model ' + model + ' --output-image ' + path_styled + ' --cuda 1')
@@ -81,7 +80,6 @@ def process_image(data, model):
 
     # styled con marco
     border = (data['evento'] == 'CL') and (not 'ppm_sm_pd' in filename)
-    print('borde', border)
     if border:
         image.printeable_image(path_styled).save(path_styled)
 
