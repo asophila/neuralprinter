@@ -86,7 +86,7 @@ def process_image(data, model):
     # original orientation
     if orientation > 0:
         print('orientacion original', orientation)
-        #image.set_orientation(path_styled, data['imagen'])
+        image.set_orientation(path_styled, data['imagen'])
 
     # upload image styled
     print('subir imagen')
