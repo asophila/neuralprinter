@@ -64,7 +64,7 @@ def save_image_to_process(data, fit = False):
     # ajustar
     orientation = 0
     if fit:
-        orientation = image.fit_image(filename)[0].save(filename)
+        image.fit_image(filename).save(filename)
         
     return filename, orientation
 

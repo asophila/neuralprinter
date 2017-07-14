@@ -127,7 +127,7 @@ def fit_image(imagen):
         # end fill
         img = img.resize(base_size)
 
-    return img, 0
+    return img
 
 def printeable_image(imagen, base = True):
     foreground = Image.open('base.png')
