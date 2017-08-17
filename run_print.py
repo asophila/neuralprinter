@@ -22,6 +22,7 @@ import send_email as sender
 save_images = True
 print_os = platform.system()
 evento = ''
+url = 'http://practiapinta.me/tepinta'
 ####################################################
 
 if print_os == 'Windows':
@@ -35,13 +36,13 @@ def find_next_print(sc):
     try:
         continuar = True
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-        r = requests.get('http://pinta.bicubi.co/get_next_to_print.php?evento=' + evento, headers=headers)
+        r = requests.get(url + '/get_next_to_print.php?evento=' + evento, headers=headers)
 
         if r.status_code == 200:
             next_print = r.json()
             if next_print and not next_print['error']:
                 print('-----------------------------------')
-                r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_print['id'], 'status': 'IMPRIMIENDO'}, headers=headers)
+                r = requests.post(url + '/set_status.php', data={'id': next_print['id'], 'status': 'IMPRIMIENDO'}, headers=headers)
                 print(str(time.time()), 'imprimiendo imagen', next_print['name'])
                 print('-----------------------------------')
 
@@ -64,7 +65,7 @@ def find_next_print(sc):
                     os.remove(filename)
 
                 print('-----------------------------------')
-                r = requests.post('http://pinta.bicubi.co/set_status.php', data={'id': next_print['id'], 'status': 'IMPRESO'}, headers=headers)
+                r = requests.post(url + '/set_status.php', data={'id': next_print['id'], 'status': 'IMPRESO'}, headers=headers)
                 print(str(time.time()), 'impresa imagen', next_print['name'])
                 print('-----------------------------------')
             else:
