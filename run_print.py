@@ -15,14 +15,15 @@ import requests
 import sched
 import time
 
-import send_email as sender
+import config
+#import send_email as sender
 
 ####################################################
 # completar estos campos de acuerdo al ambiente y evento
 save_images = True
 print_os = platform.system()
 evento = ''
-url = 'http://practiapinta.me/tepinta'
+url = config.url
 ####################################################
 
 if print_os == 'Windows':
@@ -52,7 +53,8 @@ def find_next_print(sc):
                     fh.write(base64.b64decode(next_print['imagen']))
 
                 # enviar por email
-                sender.email([next_print['correo']], [filename])
+                # ahora se envia en el process
+                #sender.email([next_print['correo']], [filename])
 
                 # windows
                 codigo = next_print['codigo']
@@ -80,13 +82,13 @@ def find_next_print(sc):
     # do your stuff
     s.enter(10, 1, find_next_print, (sc,))
 
-if not sender.ok():
-    print('Configurar cuenta de correo')
+# if not sender.ok():
+#     print('Configurar cuenta de correo')
 
-else:
-    if not os.path.exists('print/'):
-        os.mkdir('print')
+# else:
+if not os.path.exists('print/'):
+    os.mkdir('print')
 
-    s = sched.scheduler(time.time, time.sleep)
-    s.enter(1, 1, find_next_print, (s,))
-    s.run()
+s = sched.scheduler(time.time, time.sleep)
+s.enter(1, 1, find_next_print, (s,))
+s.run()

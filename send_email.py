@@ -15,13 +15,13 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-import config_mail
+import config
 
 COMMASPACE = ', '
-sender = config_mail.sender
-password = config_mail.password
-smtp = config_mail.smtp
-body = config_mail.body
+sender = config.sender
+password = config.password
+smtp = config.smtp
+body = config.body
 
 def ok():
     return sender and password and smtp
@@ -64,7 +64,7 @@ def email(recipients, attachments):
             s.login(sender, password)
             s.sendmail(sender, recipients, composed)
             s.close()
-        print("Correo enviado.")
+        print("Correo enviado a " + outer['To'])
     except:
         print("No se pudo enviar el correo.")
         raise

@@ -6,12 +6,14 @@ import sched
 import time
 import urllib.request
 
+import config
 import image
+import send_email as sender
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
 
 ###################################################################################################
-url = 'http://practiapinta.me/tepinta'
+url = config.url
 save_images = True
 ###################################################################################################
 
@@ -91,6 +93,9 @@ def process_image(data, model):
 
     if not r:
         return False, 'Error al subir la imagen'
+    
+    # enviar correo
+    sender.email([data['correo']], [path_styled])
 
     # borrar imagenes
     if not save_images:
