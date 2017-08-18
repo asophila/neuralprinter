@@ -107,11 +107,11 @@ def fit_image(imagen):
         if new_size[1] > 0:
             #print('cambiar relacion', imagen)
             if (img_size[0]/img_size[1]) > (base_size[0]/base_size[1]):
-                bg = Image.new('RGBA', new_size[0], (255,255,255,255))
+                bg = Image.new('RGB', new_size[0], (255,255,255))
                 bg.paste(img, (0, new_size[1]))
                 img = bg
             else:
-                bg = Image.new('RGBA', new_size[0], (255,255,255,255))
+                bg = Image.new('RGB', new_size[0], (255,255,255))
                 bg.paste(img, (0, -new_size[1]))
                 img = bg
             img = img.resize(base_size)
@@ -124,13 +124,13 @@ def fit_image(imagen):
         # fill black        
         #img = img.crop((0, -new_size[1], new_size[0][0], new_size[0][1] - new_size[1]))
         # fill white or personalizable
-        bg = Image.new('RGBA', new_size[0], (255,255,255,255))
+        bg = Image.new('RGB', new_size[0], (255,255,255))
         bg.paste(img, (0, new_size[1]))
         img = bg
         # end fill
         img = img.resize(base_size)
 
-    #img = img.convert('RGB')
+        #img = img.convert('RGB')
     
     if rotated:
         img = img.rotate(90, expand=1)
