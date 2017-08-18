@@ -130,6 +130,8 @@ def fit_image(imagen):
         # end fill
         img = img.resize(base_size)
 
+    img = img.convert('RGB')
+    
     if rotated:
         img = img.rotate(90, expand=1)
 
