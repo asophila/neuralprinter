@@ -47,7 +47,10 @@ def upload_image(filename, upload_data):
                 },
         headers = headers)
     #print(r.json())
-    return (r.status_code == 200)
+    if not r.status_code == 200:
+        return False
+    resp = r.json()
+    return not resp['error']
 
 def set_status(id, estado):
     print('-----------------------------------')
