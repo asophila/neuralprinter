@@ -43,7 +43,7 @@ def upload_image(filename, upload_data):
         files = files,
         data = {
                 'id': upload_data['id'],
-                'name': upload_data['name'] + '_' + upload_data['estilo'] + upload_data['ext']
+                'name': str(time.time()) + '_' + upload_data['name'] + '_' + upload_data['estilo'] + upload_data['ext']
                 },
         headers = headers)
     #print(r.json())
