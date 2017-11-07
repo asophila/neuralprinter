@@ -2,6 +2,8 @@
 
 session_start();
 
+if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) ob_start("ob_gzhandler"); else ob_start();
+
 function getUserIP()
 {
     $client  = @$_SERVER['HTTP_CLIENT_IP'];
@@ -29,7 +31,7 @@ $user_ip = getUserIP();
 if(strlen($user_ip) > 5){
     $geo = json_decode(file_get_contents('http://www.geoplugin.net/json.gp?ip='.$user_ip));
     if($geo->geoplugin_status == 200){
-        $_SESSION['evento'] = $geo->geoplugin_countryCode;
+        $_SESSION['evento'] = 'CL';// $geo->geoplugin_countryCode;
     }
 } else {
     $_SESSION['evento'] = 'CL';
@@ -77,22 +79,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $usuario = $_POST["usuario"];
         $correo = $_POST["correo"];
-        $empresa = $_POST["empresa"];
-        $cargo = $_POST["cargo"];
+        // $empresa = $_POST["empresa"];
+        // $cargo = $_POST["cargo"];
     }
     else{
         $_SESSION['uniqid'] = $_POST['uniqid'];
 
         $usuario = $_POST["usuario"];
         $correo = $_POST["correo"];
-        $empresa = $_POST["empresa"];
-        $cargo = $_POST["cargo"];
+        $empresa = 'practia';//$_POST["empresa"];
+        $cargo = '18-09-2017';//$_POST["cargo"];
         $codigo = strtolower($_POST["codigo"]);
         $estilo = $_POST["estilo"];
         if(isset($_SESSION['evento']) && strlen($_SESSION['evento']) > 0){
             $evento = $_SESSION["evento"];
         } else {
-            $evento = $_POST["evento"];
+            $evento = 'CL';//$_POST["evento"];
         }
 
         #validar codigo
@@ -139,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $_SESSION['show_link'] = true;
                         $codigo = '';
                     } else {
-                        $uploadMessage = "No se pudo guardar tu imagen, intenta con una más pequeña (máx. 3MB)";
+                        $uploadMessage = "No se pudo guardar tu imagen!";
                         $uploadOk = 0;
                     }
                     $conn->close();
@@ -196,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="input-field col s12 m6"> <input name="usuario" id="usuario" type="text" class="validate" required> <label for="usuario">* Nombre</label></div>
                     <div class="input-field col s12 m6"> <input name="correo" id="correo" type="email" class="validate" required> <label for="correo" data-error="Correo no válido">* Correo</label>                        </div>
                 </div>
-                <div class="row">
+                <div class="row hidden">
                     <div class="input-field col s12 m6"> <input name="empresa" id="empresa" type="text" class="validate" > <label for="empresa">* Empresa</label></div>
                     <div class="input-field col s12 m6"> <input name="cargo" id="cargo" type="text" class="validate" > <label for="cargo">* Cargo</label>                        </div>
                 </div>

@@ -3,6 +3,6 @@ import os
 
 def print_image(filename, print_image = False):
     if print_image:
-        os.system('lpr ' + filename)
+        os.system('lp ' + filename)
 
     return

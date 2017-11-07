@@ -102,7 +102,7 @@ if(strlen($user_ip) > 5){
         $evento = $geo->geoplugin_countryCode;
     }
 }
-$correo = get_correo($evento);
+$correo = '';//get_correo($evento);
 
 echo get_next_to_print($evento, $correo);
 

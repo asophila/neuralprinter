@@ -9,6 +9,10 @@ if(isset($_GET['id'])){
 
     $row = mysqli_fetch_array($result);
 
+
+    echo '<p>Nombre: <b>'.$row['usuario'].'</b></p>';
+    echo '<p>Correo: <b>'.$row['correo'].'</b></p>';
+
     if($row['imagen']){
         echo '<img width="400" src="data:image/jpeg;base64,'.base64_encode( $row['imagen'] ).'"/>';
     } else {

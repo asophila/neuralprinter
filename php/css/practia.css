@@ -201,3 +201,7 @@ input:-webkit-autofill:hover {
 .break-word {
     word-break: normal;
 }
+
+.hidden {
+    display: none;
+}
